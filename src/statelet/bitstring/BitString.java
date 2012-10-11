@@ -355,7 +355,7 @@ public final class BitString
 		if( a.length() != b.length() )
 			throw new IllegalArgumentException();
 		
-		BitSet aa = b.impl.get( 0, b.impl.size() - 1 );
+		BitSet aa = a.impl.get( 0, a.impl.size() - 1 );
 		aa.xor( b.impl );
 		return aa.cardinality();
 	}
