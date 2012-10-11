@@ -349,6 +349,16 @@ public final class BitString
 		
 		impl.xor( rhs.impl );
 	}
+	
+	public static int HammingDistance( BitString a, BitString b )
+	{
+		if( a.length() != b.length() )
+			throw new IllegalArgumentException();
+		
+		BitSet aa = b.impl.get( 0, b.impl.size() - 1 );
+		aa.xor( b.impl );
+		return aa.cardinality();
+	}
 }
 
 // End ///////////////////////////////////////////////////////////////
