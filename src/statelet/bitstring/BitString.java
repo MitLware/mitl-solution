@@ -113,7 +113,11 @@ public final class BitString
 	
 	public BitString( BitString rhs )
 	{
-		impl = rhs.impl.get( 0, rhs.impl.size() - 1 );
+		if( rhs.impl.size() == 0 )
+			impl = new BitSet( 0 );
+		else
+			impl = rhs.impl.get( 0, rhs.impl.size() - 1 );
+		
 		length = rhs.length;
 	}
 	
