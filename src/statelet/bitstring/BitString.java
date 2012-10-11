@@ -113,11 +113,7 @@ public final class BitString
 	
 	public BitString( BitString rhs )
 	{
-		if( rhs.impl.size() == 0 )
-			impl = new BitSet( 0 );
-		else
-			impl = rhs.impl.get( 0, rhs.impl.size() - 1 );
-		
+		impl = (BitSet)rhs.impl.clone();
 		length = rhs.length;
 	}
 	
@@ -359,7 +355,7 @@ public final class BitString
 		if( a.length() != b.length() )
 			throw new IllegalArgumentException();
 		
-		BitSet aa = a.impl.get( 0, a.impl.size() - 1 );
+		BitSet aa = (BitSet)a.impl.clone();
 		aa.xor( b.impl );
 		return aa.cardinality();
 	}
