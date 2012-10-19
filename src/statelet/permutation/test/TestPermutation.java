@@ -1,5 +1,6 @@
 package statelet.permutation.test;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -174,7 +175,7 @@ public final class TestPermutation {
 			int [] inCycle2 = new int [] { 1,2,3 };
 			Cycle c2 = new Cycle( inCycle2 );
 			int [] outPerm2 = c2.toPermutationArray();
-			assertTrue( Arrays.equals( inPerm2, outPerm2 ) );
+			assertArrayEquals( inPerm2, outPerm2 );
 
 			Set< Cycle > actualProduct = CycleUtils.multiply( c1, c2 );
 			Set< Cycle > expectedProduct = new HashSet< Cycle >();
