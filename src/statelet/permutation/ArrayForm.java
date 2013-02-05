@@ -113,6 +113,10 @@ implements Permutation, Comparable< ArrayForm >
 	
 	///////////////////////////////
 	
+	public int [] toArray() {
+		return perm_.clone();
+	}
+	
 	public void swap( int index1, int index2 ) 
 	{
 		ArrayUtilsUnchecked.swap( perm_, index1, index2 );
