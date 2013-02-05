@@ -79,6 +79,8 @@ implements Permutation, Comparable< ArrayForm >
 
 	///////////////////////////////
 
+	public int [] toArray() { return permutation_.clone(); }
+	
 	@Override
 	public int minPreimage() 
 	{
@@ -191,7 +193,6 @@ implements Permutation, Comparable< ArrayForm >
 		ArrayUtils.rotateArray( permutation_, amount );
 		assert invariant();
 	}
-	
 	
 	/**
 	 * Permute a number of randomly selected elements.
