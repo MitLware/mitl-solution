@@ -15,10 +15,10 @@ implements Permutation
 	
 	public DisjointCycleForm( int ... perm )
 	{
-		if( !ArrayUtils.isPermutation( perm ) )
+		if( !ArrayUtilsUnchecked.isPermutation( perm ) )
 			throw new IllegalArgumentException();
 		
-		disjointCycles_ = CycleUtils.fromArray( perm );
+		disjointCycles_ = CycleUtilsUnchecked.fromArray( perm );
 		assert( invariant() );
 	}
 
@@ -30,7 +30,7 @@ implements Permutation
 	
 	public DisjointCycleForm( Set< Cycle > cycles )
 	{
-		if( !CycleUtils.cyclesAreDisjoint( cycles ) )
+		if( !CycleUtilsUnchecked.cyclesAreDisjoint( cycles ) )
 			throw new IllegalArgumentException();
 		
 		disjointCycles_ = new HashSet< Cycle >( cycles );
@@ -125,7 +125,7 @@ implements Permutation
 		for( int i=0; i<size; ++i )		
 			perm[ i ] = image( i );
 
-		assert( ArrayUtils.isPermutation( perm ) );
+		assert( ArrayUtilsUnchecked.isPermutation( perm ) );
 		return perm;
 	}
 	
@@ -174,7 +174,7 @@ implements Permutation
 	
 	public boolean invariant()
 	{
-		return CycleUtils.cyclesAreDisjoint( 
+		return CycleUtilsUnchecked.cyclesAreDisjoint( 
 				disjointCycles_ );
 	}
 }

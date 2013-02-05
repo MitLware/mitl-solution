@@ -27,7 +27,7 @@ implements Permutation, Comparable< Cycle >
 		
 		cycle_ = cycle.clone();
 		final int minIndex = statelet.util.Arrays.minIndex( cycle_ );
-		ArrayUtils.rotateArray( cycle_, -minIndex );
+		ArrayUtilsUnchecked.rotateArray( cycle_, -minIndex );
 		
 		assert( invariant() );
 	}
@@ -131,7 +131,7 @@ implements Permutation, Comparable< Cycle >
 		for( int i=0; i<size; ++i )		
 			perm[ i ] = image( i );
 
-		assert( ArrayUtils.isPermutation( perm ) );
+		assert( ArrayUtilsUnchecked.isPermutation( perm ) );
 		return perm;
 	}
 	

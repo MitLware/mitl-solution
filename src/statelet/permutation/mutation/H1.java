@@ -2,12 +2,9 @@ package statelet.permutation.mutation;
 
 import java.util.Random;
 
-import statelet.Mutator;
-import statelet.permutation.Permutation;
-import statelet.permutation.ArrayForm;
-
-
 import jeep.math.UnitInterval;
+import statelet.Mutator;
+import statelet.permutation.ArrayForm;
 
 /**
  * HyFlex TSP\Flow shop heuristic H1

@@ -14,12 +14,12 @@ import jeep.lang.Diag;
 
 //////////////////////////////////////////////////////////////////////
 
-public final class CycleUtils {
+final class CycleUtilsUnchecked {
 
 	public static Set< Cycle > 
 	fromArray( int ... perm )
 	{
-		assert( ArrayUtils.isPermutation( perm ) );
+		assert( ArrayUtilsUnchecked.isPermutation( perm ) );
 		
 		BitSet unchecked = new BitSet( perm.length );
 		unchecked.set( 0, perm.length );
@@ -78,6 +78,7 @@ public final class CycleUtils {
 	
 	///////////////////////////////
 	
+	// TODO: can this be replaced by Permutation.multiply?
 	public static Set< Cycle > 
 	multiply( Cycle c1, Cycle c2 ) 
 	{
@@ -117,7 +118,7 @@ public final class CycleUtils {
 				}
 			}
 		}
-		assert( CycleUtils.cyclesAreDisjoint( result ) );		
+		assert( CycleUtilsUnchecked.cyclesAreDisjoint( result ) );		
 		return result;
 	}
 }

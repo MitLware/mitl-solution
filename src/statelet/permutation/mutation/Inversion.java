@@ -4,7 +4,6 @@ import java.util.Random;
 
 import jeep.math.UnitInterval;
 import statelet.Mutator;
-import statelet.permutation.Permutation;
 import statelet.permutation.ArrayForm;
 
 //////////////////////////////////////////////////////////////////////

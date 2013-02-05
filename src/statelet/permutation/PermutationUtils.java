@@ -48,7 +48,7 @@ public class PermutationUtils {
 				}
 			}
 		}
-		assert( CycleUtils.cyclesAreDisjoint( result ) );		
+		assert( CycleUtilsUnchecked.cyclesAreDisjoint( result ) );		
 		return result;
 	}
 }

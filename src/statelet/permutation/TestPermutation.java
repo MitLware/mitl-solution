@@ -1,6 +1,5 @@
-package statelet.permutation.test;
+package statelet.permutation;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -18,11 +17,6 @@ import jeep.math.UnitInterval;
 import org.junit.Test;
 
 import statelet.Mutator;
-import statelet.permutation.ArrayForm;
-import statelet.permutation.ArrayUtils;
-import statelet.permutation.Cycle;
-import statelet.permutation.DisjointCycleForm;
-import statelet.permutation.CycleUtils;
 import statelet.permutation.mutation.H1;
 import statelet.permutation.mutation.H2;
 import statelet.permutation.mutation.H3;
@@ -146,7 +140,7 @@ public final class TestPermutation {
 			int [] p1 = new int [] { 1,2,3,0 };
 			int [] p2 = new int [] { 3,2,0,1 };		
 
-			int [] product = ArrayUtils.multiply( p2, p1 ); 
+			int [] product = ArrayUtilsUnchecked.multiply( p2, p1 ); 
 			// System.out.println( Arrays.toString( product ) );
 			assertTrue( Arrays.equals(  new int [] { 0, 3, 1, 2 }, product ) );
 		}
@@ -156,7 +150,7 @@ public final class TestPermutation {
 		{
 			Cycle c1 = new Cycle( 1,2 );
 			Cycle c2 = new Cycle( 2,3 );
-			Set< Cycle > actualProduct = CycleUtils.multiply( c1, c2 );
+			Set< Cycle > actualProduct = CycleUtilsUnchecked.multiply( c1, c2 );
 			Set< Cycle > expectedProduct = Collections.singleton( 
 					new Cycle( 1,3,2 ) );			
 			assertEquals( expectedProduct, actualProduct );
@@ -175,9 +169,9 @@ public final class TestPermutation {
 			int [] inCycle2 = new int [] { 1,2,3 };
 			Cycle c2 = new Cycle( inCycle2 );
 			int [] outPerm2 = c2.toPermutationArray();
-			assertArrayEquals( inPerm2, outPerm2 );
+			assertTrue( Arrays.equals( inPerm2, outPerm2 ) );
 
-			Set< Cycle > actualProduct = CycleUtils.multiply( c1, c2 );
+			Set< Cycle > actualProduct = CycleUtilsUnchecked.multiply( c1, c2 );
 			Set< Cycle > expectedProduct = new HashSet< Cycle >();
 			expectedProduct.add( new Cycle( 0, 2 ) );
 			expectedProduct.add( new Cycle( 1, 3 ) );			
@@ -196,7 +190,7 @@ public final class TestPermutation {
 	{
 		{
 			int [] perm = new int [] { 0,1,2 };		
-			Set< Cycle > disjointCycles = CycleUtils.fromArray( 
+			Set< Cycle > disjointCycles = CycleUtilsUnchecked.fromArray( 
 					perm );
 			
 			Set< Cycle > expected = new HashSet< Cycle >();
@@ -205,7 +199,7 @@ public final class TestPermutation {
 		
 		{
 			int [] perm = new int [] { 0,2,1 };
-			Set< Cycle > disjointCycles = CycleUtils.fromArray( 0,2,1 );
+			Set< Cycle > disjointCycles = CycleUtilsUnchecked.fromArray( 0,2,1 );
 			Set< Cycle > expected = new HashSet< Cycle >();
 			expected.add( new Cycle( 1,2 ) );
 			assertEquals( expected, disjointCycles );
@@ -219,7 +213,7 @@ public final class TestPermutation {
 		{
 			int [] perm = new int [] { 0,3,2,1 };	
 			// 0->0,1->3,2->2,3->1
-			Set< Cycle > disjointCycles = CycleUtils.fromArray( perm );
+			Set< Cycle > disjointCycles = CycleUtilsUnchecked.fromArray( perm );
 			Set< Cycle > expected = new HashSet< Cycle >();
 			// expected.add( new Cycle( new int [] { 1 } ) );
 			Cycle exc = new Cycle( 1, 3 );
