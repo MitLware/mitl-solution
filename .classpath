@@ -5,6 +5,7 @@
 	<classpathentry kind="lib" path="lib3rd/jeep.jar"/>
 	<classpathentry kind="lib" path="lib3rd/guava-13.0.1.jar"/>
 	<classpathentry kind="lib" path="lib3rd/PowerCHORDS.jar"/>
+	<classpathentry kind="lib" path="lib3rd/commons-math3-3.1.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

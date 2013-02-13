@@ -1,14 +1,17 @@
 package statelet.polynomialroot;
 
+import org.apache.commons.math3.analysis.UnivariateFunction;
+
 //////////////////////////////////////////////////////////////////////
 
-public final class UnivariatePolynomialRealRoots
+public final class UnivariatePolynomialRealRootsFixedDegree
+implements UnivariateFunction
 {
 	private double [] impl;
 	
 	///////////////////////////////
 	
-	public UnivariatePolynomialRealRoots( double [] impl ) 
+	public UnivariatePolynomialRealRootsFixedDegree( double [] impl ) 
 	{
 		if( !isValidImpl( impl ) )
 			throw new IllegalArgumentException();
@@ -20,7 +23,8 @@ public final class UnivariatePolynomialRealRoots
 	
 	///////////////////////////////	
 
-	public double apply( double x )
+	@Override
+	public double value( double x )
 	{
 		return evaluatePolynomial( x, impl );
 	}
@@ -29,9 +33,7 @@ public final class UnivariatePolynomialRealRoots
 	
 	public static boolean isValidImpl( double [] impl )
 	{
-		final int len = impl.length;
-		final long degree = Math.round( impl[ 0 ] );
-		return len > 0 && degree >= 0 && len >= degree + 2;			
+		return impl.length > 0;			
 	}
 	
 	///////////////////////////////	
@@ -39,7 +41,7 @@ public final class UnivariatePolynomialRealRoots
 	@Override
 	public String toString()
 	{
-		final long degree = Math.round( impl[ 0 ] ); 
+		final long degree = impl.length - 1; 
 		StringBuffer result = new StringBuffer();
 		result.append( "degree: " + degree + " poly:" );
 			
@@ -47,7 +49,7 @@ public final class UnivariatePolynomialRealRoots
 		for( int i=0; i<degree; ++i )
 		{
 			result.append( "(x - " );
-			final double value = Math.abs( impl[ i + 2 ] );
+			final double value = Math.abs( impl[ i + 1 ] );
 			result.append( value + ")" );
 		}
 
@@ -72,10 +74,10 @@ public final class UnivariatePolynomialRealRoots
 	@Override	
 	public boolean equals( Object o )
 	{
-		if( !( o instanceof UnivariatePolynomialRealRoots ) )
+		if( !( o instanceof UnivariatePolynomialRealRootsFixedDegree ) )
 			return false;
 		
-		UnivariatePolynomialRealRoots rhs = (UnivariatePolynomialRealRoots)o;
+		UnivariatePolynomialRealRootsFixedDegree rhs = (UnivariatePolynomialRealRootsFixedDegree)o;
 		return impl.equals( rhs.impl );
 	}
 	
@@ -83,14 +85,11 @@ public final class UnivariatePolynomialRealRoots
 
 	private static double evaluatePolynomial( double x, double [] impl ) 
 	{
-		final long degree = Math.round( impl[ 0 ] );
-
-		if( degree + 1 >= impl.length )
-			throw new IllegalStateException();
+		final long degree = impl.length - 1;
 
 		double outputValue = impl[ 1 ];
 		for( int i=0; i<degree; ++i )		
-			outputValue *= x - impl[ i + 2 ];
+			outputValue *= x - impl[ i + 1 ];
 
 		return outputValue;
 	} 
