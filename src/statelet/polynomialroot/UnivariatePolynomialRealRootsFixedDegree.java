@@ -1,11 +1,11 @@
 package statelet.polynomialroot;
 
-import org.apache.commons.math3.analysis.UnivariateFunction;
+import funk.Function1;
 
 //////////////////////////////////////////////////////////////////////
 
 public final class UnivariatePolynomialRealRootsFixedDegree
-implements UnivariateFunction
+implements Function1< Double, Double >
 {
 	private double [] impl;
 	
@@ -24,7 +24,7 @@ implements UnivariateFunction
 	///////////////////////////////	
 
 	@Override
-	public double value( double x )
+	public Double apply( Double x )
 	{
 		return evaluatePolynomial( x, impl );
 	}
