@@ -66,7 +66,7 @@ public final class BitString
 		BitString result = new BitString( x.length() );
 		for( int i=0; i<x.length(); ++i )
 			if( x.charAt( i ) == '1' )
-				result.set( i );
+				result.set( x.length() - i - 1 );
 			else if( x.charAt( i ) != '0' )
 				throw new IllegalArgumentException();
 		
