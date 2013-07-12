@@ -23,6 +23,8 @@
 package statelet.bitstring;
 
 import java.util.BitSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Random;
 
 //////////////////////////////////////////////////////////////////////
@@ -159,7 +161,51 @@ public final class BitString
 	 * Sets the bits from the specified fromIndex(inclusive) to the specified toIndex(exclusive) to false. 
 	 */
 	public void clear(int fromIndex, int toIndex) { impl.clear(fromIndex, toIndex); }
+	
+	///////////////////////////////
  
+	private static final class SparseIterator 
+	implements Iterator< Integer > 
+	{
+	    private final BitSet bitset_;
+	    private int index_ = -1;
+
+	    ///////////////////////////////
+	    
+	    public SparseIterator( BitSet bitset ) 
+	    {
+	        bitset_ = bitset;
+	        index_ = bitset.nextSetBit( 0 ); 
+	    }
+
+	    public boolean hasNext() 
+	    {
+	    	return index_ != -1;
+	    }
+
+	    public Integer next() 
+	    {
+	        if( !hasNext() )
+	            throw new NoSuchElementException();
+	        
+	        int result = index_;
+	        index_ = bitset_.nextSetBit( ++index_ );
+	        return result;
+	    }
+
+	    public void remove() {
+	        throw new UnsupportedOperationException();
+	    }
+	}
+	
+	///////////////////////////////
+	
+	public Iterator< Integer > sparseIterator() {
+		return new SparseIterator( impl );
+	}
+	
+	///////////////////////////////
+	
 	public BitString clone() { return new BitString( this ); } 
     
 	public boolean equals( Object obj )
