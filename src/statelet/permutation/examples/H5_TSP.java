@@ -1,10 +1,9 @@
-package statelet.permutation.mutation;
+package statelet.permutation.examples;
 
 import java.util.Random;
 
 import statelet.Mutator;
-import statelet.permutation.ArrayForm;
-
+import statelet.permutation.core.ArrayForm;
 
 import jeep.math.UnitInterval;
 
@@ -13,13 +12,13 @@ import jeep.math.UnitInterval;
  * @author Jerry Swan
  */
 
-public class H3 implements Mutator< ArrayForm > {
+public class H5_TSP implements Mutator< ArrayForm > {
 
 	@Override
 	public ArrayForm apply( ArrayForm s, UnitInterval mutationDegree, Random random ) 
 	{
 		ArrayForm result = new ArrayForm( s );
-		result.randomShuffle( random );
+		result.nOpt( mutationDegree, random );
 		return result;
 	}
 }

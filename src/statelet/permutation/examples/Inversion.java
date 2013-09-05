@@ -1,10 +1,10 @@
-package statelet.permutation.mutation;
+package statelet.permutation.examples;
 
 import java.util.Random;
 
 import jeep.math.UnitInterval;
 import statelet.Mutator;
-import statelet.permutation.ArrayForm;
+import statelet.permutation.core.ArrayForm;
 
 //////////////////////////////////////////////////////////////////////
 

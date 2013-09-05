@@ -24,7 +24,7 @@
 
 *********************************************************************/
     	
-package statelet.permutation;
+package statelet.permutation.core;
 
 
 import java.util.ArrayList;

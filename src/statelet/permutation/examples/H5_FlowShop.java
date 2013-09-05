@@ -1,23 +1,24 @@
-package statelet.permutation.mutation;
+package statelet.permutation.examples;
 
 import java.util.Random;
 
-import jeep.math.UnitInterval;
 import statelet.Mutator;
-import statelet.permutation.ArrayForm;
+import statelet.permutation.core.ArrayForm;
+
+import jeep.math.UnitInterval;
 
 /**
- * HyFlex TSP\Flow shop heuristic H1
+ * HyFlex TSP\Flow shop heuristic H3
  * @author Jerry Swan
  */
 
-public class H1 implements Mutator< ArrayForm > {
+public class H5_FlowShop implements Mutator< ArrayForm > {
 
 	@Override
 	public ArrayForm apply( ArrayForm s, UnitInterval mutationDegree, Random random ) 
 	{
 		ArrayForm result = new ArrayForm( s );
-		result.randomInsert( random );
+		result.randomShuffleSubset( mutationDegree, random );
 		return result;
 	}
 }

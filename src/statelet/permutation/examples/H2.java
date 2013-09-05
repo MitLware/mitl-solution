@@ -1,9 +1,9 @@
-package statelet.permutation.mutation;
+package statelet.permutation.examples;
 
 import java.util.Random;
 
 import statelet.Mutator;
-import statelet.permutation.ArrayForm;
+import statelet.permutation.core.ArrayForm;
 
 import jeep.math.UnitInterval;
 

@@ -1,4 +1,4 @@
-package statelet.permutation;
+package statelet.permutation.core;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,11 +17,11 @@ import jeep.math.UnitInterval;
 import org.junit.Test;
 
 import statelet.Mutator;
-import statelet.permutation.mutation.H1;
-import statelet.permutation.mutation.H2;
-import statelet.permutation.mutation.H3;
-import statelet.permutation.mutation.H5_FlowShop;
-import statelet.permutation.mutation.H5_TSP;
+import statelet.permutation.examples.H1;
+import statelet.permutation.examples.H2;
+import statelet.permutation.examples.H3;
+import statelet.permutation.examples.H5_FlowShop;
+import statelet.permutation.examples.H5_TSP;
 
 
 //////////////////////////////////////////////////////////////////////

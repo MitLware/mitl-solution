@@ -1,4 +1,4 @@
-package statelet.permutation;
+package statelet.permutation.core;
 
 import static org.junit.Assert.assertArrayEquals;
 
