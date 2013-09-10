@@ -349,7 +349,7 @@ final class ArrayUtilsUnchecked {
 	
 	///////////////////////////////
 	
-	static void swap( int [] perm, int index1, int index2 ) 
+	static void transpose( int [] perm, int index1, int index2 ) 
 	{
 		assert( isPermutation( perm ) );
 		
@@ -486,6 +486,20 @@ final class ArrayUtilsUnchecked {
 			return newPerm;
 		}
 	}	
+
+	///////////////////////////////
+	
+	public static int hammingDistance( int [] a, int [] b ) {
+		if( a.length != b.length )
+			throw new IllegalArgumentException();
+
+		int result = 0;
+		for( int i=0; i<a.length; ++i )
+			if( a[ i ] == b[ i ] )
+				++result;
+		
+		return result;
+	}
 }
 
 // End ///////////////////////////////////////////////////////////////

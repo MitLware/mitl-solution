@@ -117,9 +117,14 @@ implements Permutation, Comparable< ArrayForm >
 		return perm_.clone();
 	}
 	
-	public void swap( int index1, int index2 ) 
+	public void transpose( int index1, int index2 ) 
 	{
-		ArrayUtilsUnchecked.swap( perm_, index1, index2 );
+		if( index1 < 0 || index1 >= size() )
+			throw new IllegalArgumentException();
+		if( index2 < 0 || index2 >= size() )
+			throw new IllegalArgumentException();
+		
+		ArrayUtilsUnchecked.transpose( perm_, index1, index2 );
 		assert invariant();
 	}
 
@@ -141,7 +146,7 @@ implements Permutation, Comparable< ArrayForm >
 		while( ( r2 = random.nextInt( perm_.length ) ) != r1 )
 			;
 		
-		ArrayUtilsUnchecked.swap( perm_, r1, r2 );
+		ArrayUtilsUnchecked.transpose( perm_, r1, r2 );
 		assert invariant();
 	}
 
@@ -231,7 +236,16 @@ implements Permutation, Comparable< ArrayForm >
 		***/
 		return ArrayUtilsUnchecked.getAscents( perm_ );
 	}
+	
+	///////////////////////////////
+	
+	public int hammingDistance( ArrayForm other ) {
+		if( size() != other.size() )
+			throw new IllegalArgumentException();
 
+		return ArrayUtilsUnchecked.hammingDistance( perm_, other.perm_ );
+	}
+	
 	///////////////////////////////
 	
 	/**
