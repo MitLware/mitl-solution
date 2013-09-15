@@ -7,6 +7,7 @@ import statelet.permutation.core.ArrayForm;
 
 import jeep.math.UnitInterval;
 
+class H2 {}
 /**
  * HyFlex TSP\Flow shop heuristic H2
  * @author Jerry Swan
