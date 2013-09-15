@@ -18,7 +18,7 @@ import org.junit.Test;
 
 import statelet.Mutator;
 import statelet.permutation.examples.H1;
-import statelet.permutation.examples.H2;
+// import statelet.permutation.examples.H2;
 import statelet.permutation.examples.H3;
 import statelet.permutation.examples.H5_FlowShop;
 import statelet.permutation.examples.H5_TSP;
@@ -76,7 +76,7 @@ public final class TestPermutation {
 		List< Mutator< ArrayForm > 
 			> mutators = new ArrayList< Mutator< ArrayForm > >();
 		mutators.add( new H1() );
-		mutators.add( new H2() );
+	//	mutators.add( new H2() );
 		mutators.add( new H3() );
 		mutators.add( new H5_FlowShop() );
 		mutators.add( new H5_TSP() );		

@@ -12,6 +12,8 @@ import jeep.math.UnitInterval;
  * @author Jerry Swan
  */
 
+/***
+
 public class H2 implements Mutator< ArrayForm > 
 {
 	@Override
@@ -32,6 +34,7 @@ public class H2 implements Mutator< ArrayForm >
 		}
 	}
 }
+***/
 
 // End ///////////////////////////////////////////////////////////////
 
