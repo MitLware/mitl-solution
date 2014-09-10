@@ -1,4 +1,4 @@
-package statelet.permutation.core;
+package statelet.permutation;
 
 import java.util.Arrays;
 import java.util.HashSet;

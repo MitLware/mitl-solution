@@ -4,7 +4,7 @@ import java.util.Random;
 
 import jeep.math.UnitInterval;
 import statelet.Mutator;
-import statelet.permutation.core.ArrayForm;
+import statelet.permutation.ArrayForm;
 
 /**
  * HyFlex TSP\Flow shop heuristic H1
