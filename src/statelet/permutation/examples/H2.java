@@ -2,7 +2,6 @@ package statelet.permutation.examples;
 
 import java.util.Random;
 
-import statelet.Mutator;
 import statelet.permutation.ArrayForm;
 import jeep.math.UnitInterval;
 

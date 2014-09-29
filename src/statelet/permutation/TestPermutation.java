@@ -16,13 +16,10 @@ import jeep.math.UnitInterval;
 
 import org.junit.Test;
 
-import statelet.Mutator;
+import heu4j.Mutate;
 import statelet.permutation.examples.H1;
 // import statelet.permutation.examples.H2;
 import statelet.permutation.examples.H3;
-import statelet.permutation.examples.H5_FlowShop;
-import statelet.permutation.examples.H5_TSP;
-
 
 //////////////////////////////////////////////////////////////////////
 
@@ -73,20 +70,20 @@ public final class TestPermutation {
 		
 		ArrayForm p1 = new ArrayForm( 10, random );
 		
-		List< Mutator< ArrayForm > 
-			> mutators = new ArrayList< Mutator< ArrayForm > >();
+		List< Mutate< ArrayForm > 
+			> mutators = new ArrayList< Mutate< ArrayForm > >();
 		mutators.add( new H1() );
 	//	mutators.add( new H2() );
 		mutators.add( new H3() );
-		mutators.add( new H5_FlowShop() );
-		mutators.add( new H5_TSP() );		
+		// mutators.add( new H5_FlowShop() );
+		// mutators.add( new H5_TSP() );		
 		
 		final int numTrials = 10;
 		for( int i=0; i<numTrials; ++i )
 		{
-			UnitInterval mutationDegree = new UnitInterval( random.nextDouble() ); 
+			// UnitInterval mutationDegree = new UnitInterval( random.nextDouble() ); 
 			p1 = mutators.get( random.nextInt( mutators.size() ) 
-				).apply( p1, mutationDegree, random );
+				).apply( p1, random );
 		}
 	}
 	
