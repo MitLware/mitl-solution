@@ -1,10 +1,9 @@
 package statelet.permutation.examples;
 
-import heu4j.Mutate;
+import hyperion3.Mutate;
 
 import java.util.Random;
 
-import jeep.math.UnitInterval;
 import statelet.permutation.ArrayForm;
 
 /**
@@ -14,8 +13,16 @@ import statelet.permutation.ArrayForm;
 
 public class H1 implements Mutate< ArrayForm > {
 
+	private Random random;
+	
+	///////////////////////////////
+	
+	public H1( Random random ) {
+		this.random = random;
+	}
+	
 	@Override
-	public ArrayForm apply( ArrayForm s, Random random ) 
+	public ArrayForm apply( ArrayForm s ) 
 	{
 		ArrayForm result = new ArrayForm( s );
 		result.randomInsert( random );

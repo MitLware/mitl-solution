@@ -16,7 +16,7 @@ import jeep.math.UnitInterval;
 
 import org.junit.Test;
 
-import heu4j.Mutate;
+import hyperion3.Mutate;
 import statelet.permutation.examples.H1;
 // import statelet.permutation.examples.H2;
 import statelet.permutation.examples.H3;
@@ -72,9 +72,9 @@ public final class TestPermutation {
 		
 		List< Mutate< ArrayForm > 
 			> mutators = new ArrayList< Mutate< ArrayForm > >();
-		mutators.add( new H1() );
+		mutators.add( new H1( random ) );
 	//	mutators.add( new H2() );
-		mutators.add( new H3() );
+		mutators.add( new H3( random ) );
 		// mutators.add( new H5_FlowShop() );
 		// mutators.add( new H5_TSP() );		
 		
@@ -83,7 +83,7 @@ public final class TestPermutation {
 		{
 			// UnitInterval mutationDegree = new UnitInterval( random.nextDouble() ); 
 			p1 = mutators.get( random.nextInt( mutators.size() ) 
-				).apply( p1, random );
+				).apply( p1 );
 		}
 	}
 	

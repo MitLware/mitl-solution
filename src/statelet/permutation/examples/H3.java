@@ -2,7 +2,7 @@ package statelet.permutation.examples;
 
 import java.util.Random;
 
-import heu4j.Mutate;
+import hyperion3.Mutate;
 import statelet.permutation.ArrayForm;
 
 /**
@@ -12,8 +12,18 @@ import statelet.permutation.ArrayForm;
 
 public class H3 implements Mutate< ArrayForm > {
 
+	private Random random;
+	
+	///////////////////////////////
+	
+	public H3( Random random ) {
+		this.random = random;
+	}
+	
+	///////////////////////////////
+	
 	@Override
-	public ArrayForm apply( ArrayForm s, Random random ) 
+	public ArrayForm apply( ArrayForm s ) 
 	{
 		ArrayForm result = new ArrayForm( s );
 		result.randomShuffle( random );

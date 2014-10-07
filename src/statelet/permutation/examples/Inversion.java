@@ -1,6 +1,6 @@
 package statelet.permutation.examples;
 
-import heu4j.Mutate;
+import hyperion3.Mutate;
 
 import java.util.Random;
 
@@ -11,8 +11,16 @@ import statelet.permutation.ArrayForm;
 public class Inversion 
 implements Mutate< ArrayForm > {
 
+	private Random random;
+	
+	///////////////////////////////
+	
+	public Inversion( Random random ) {
+		this.random = random;
+	}
+	
 	@Override
-	public ArrayForm apply( ArrayForm s, Random random ) {
+	public ArrayForm apply( ArrayForm s ) {
 		
 		final int from = random.nextInt( s.size() - 1 );
 		int to;

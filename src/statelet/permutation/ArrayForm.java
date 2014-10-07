@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import powerchords.RandomSamplingUtil;
+import metaxa.random.Sampling;
 
 import jeep.math.UnitInterval;
 
@@ -213,7 +213,7 @@ implements Permutation, Comparable< ArrayForm >
 	{
 		final int numShuffles = 2 + (int) ( mutationDegree.getValue() * ( size() - 2 ) );
 
-		int [] indicesToShuffle = RandomSamplingUtil.randomSubsetArray( perm_.length, numShuffles, random );
+		int [] indicesToShuffle = Sampling.randomSubsetArray( perm_.length, numShuffles, random );
 		assert indicesToShuffle.length == numShuffles;
 
 		ArrayUtilsUnchecked.shuffleSubset( perm_, indicesToShuffle, random );
