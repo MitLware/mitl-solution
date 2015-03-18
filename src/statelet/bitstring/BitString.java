@@ -26,6 +26,7 @@ import java.util.BitSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.function.Consumer;
 
 //////////////////////////////////////////////////////////////////////
 
@@ -196,6 +197,12 @@ public final class BitString
 	    public void remove() {
 	        throw new UnsupportedOperationException();
 	    }
+
+		@Override
+		public void forEachRemaining(Consumer<? super Integer> action) {
+			while( hasNext() )
+				action.accept(next());	    
+		}
 	}
 	
 	///////////////////////////////
@@ -205,6 +212,12 @@ public final class BitString
 	}
 	
 	///////////////////////////////
+	
+	public boolean invariant() {
+		return impl.length() <= length() && impl.size() == length();
+	}
+	
+	///////////////////////////////	
 	
 	public BitString clone() { return new BitString( this ); } 
     
