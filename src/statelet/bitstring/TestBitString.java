@@ -19,17 +19,20 @@ public class TestBitString {
 		assertEquals(b, BitString.fromLong(10L, 64));
 	}
 	
+	@Test
 	public void testConstructorsBlanks() {
 		BitString a = new BitString(32);
 		
 		assertEquals(a, new BitString(32, new java.util.Random(1)));
-		// assertEquals(a, new BitString(32, new java.util.Random(1)));// bitset
 		assertEquals(a, BitString.fromBinaryString(""));
 		assertEquals(a, BitString.fromBinaryString("0"));
 		assertEquals(a, BitString.fromBinaryString("00000000000000000000000000000000"));
 		assertEquals(a, BitString.fromInt(0));
 		assertEquals(a, BitString.fromLong(0L));
 		assertEquals(a, BitString.fromLong(0L, 64));
+		
+		assertEquals(a, new BitString(new BitSet(32), 0, 31));
+		assertNotEquals(a, new BitString(new BitSet(128), 0, 31));
 	}
 	
 	@Test
