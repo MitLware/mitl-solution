@@ -10,7 +10,7 @@ import org.junit.Test;
 public class TestBitString {
 
 	@Test
-	public void TestConstructors() {
+	public void testConstructors() {
 		BitString a = BitString.fromBinaryString("1010");
 		BitString b = BitString.fromBinaryString("00000000000000000000000000001010");
 
@@ -19,7 +19,7 @@ public class TestBitString {
 		assertEquals(b, BitString.fromLong(10L, 64));
 	}
 	
-	public void TestConstructorsBlanks() {
+	public void testConstructorsBlanks() {
 		BitString a = new BitString(32);
 		
 		assertEquals(a, new BitString(32, new java.util.Random(1)));
