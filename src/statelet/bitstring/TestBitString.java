@@ -1,10 +1,14 @@
 package statelet.bitstring;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.BitSet;
 import java.util.Iterator;
-import java.util.Random;
 
 import org.junit.Test;
 
@@ -97,7 +101,7 @@ public class TestBitString {
 		BitString b = new BitString(a);
 		
 		BitString full = new BitString(32);
-		full.set(0, 31);
+		full.set(0, full.length());
 		BitString blank = new BitString(32);
 		
 		// and with 111111 should return identical string
@@ -117,7 +121,7 @@ public class TestBitString {
 		BitString b = new BitString(a);
 		
 		BitString full = new BitString(32);
-		full.set(0, 31);
+		full.set(0, full.length());
 		BitString blank = new BitString(32);
 		
 		// should leave unchanged
@@ -413,7 +417,7 @@ public class TestBitString {
 		
 		BitString a3 = new BitString(20);
 		BitString a4 = new BitString(20);
-		a4.set(0, 19);
+		a4.set(0, 20);
 		
 		assertNotEquals(a3, a4);
 		assertFalse(a3.intersects(a4));
@@ -422,23 +426,177 @@ public class TestBitString {
 		assertEquals(a3, a4);
 		assertTrue(a3.intersects(a4));
 	}
+
+	@Test
+	public void testOr() {
+		BitString a = BitString.fromInt(7777);
+		BitString b = new BitString(a);
+		
+		BitString full = new BitString(32);
+		full.set(0, full.length());
+		BitString blank = new BitString(32);
+		
+		// or with 000000 should return original string
+		a.or(blank);
+		assertEquals( a, b );
+		assertNotEquals( a, blank );
+		
+		// or with 111111 should return 111111
+		a.or(full);
+		assertEquals( a, full );
+		assertNotEquals( a, b );
+	}
 	
-//
-//		or(BitString rhs)
-//
-//		set( int bitIndex )
-//
-//		set(int bitIndex, boolean value)
-//
-//		set(int fromIndex, int toIndex)
-//
-//		set(int fromIndex, int toIndex, boolean value)
-//
-//		subVector( int fromIndex, int toIndex )
-//
-//		xor(BitString rhs)
-//
-//		static int HammingDistance( BitString a, BitString b )
+	@Test
+	public void testSetOneBit() {
+		BitString bs0 = new BitString(32);
+		
+		bs0.set(0);
+		assertEquals(bs0, BitString.fromInt(1));
+	}
+	
+	@Test
+	public void testSetOneBitValue() {
+		BitString a = new BitString(32);
+		
+		a.set(0, false);
+		assertEquals(a, new BitString(32));
+		
+		a.set(0, true);
+		assertEquals(a, BitString.fromInt(1));
+		
+		a.set(0, false);
+		assertEquals(a, new BitString(32));
+	}
+
+	@Test
+	public void testSetRange() {
+		BitString a = BitString.fromBinaryString("000000");
+		
+		assertEquals(a.cardinality(), 0);
+		a.set(2, 4, true); // set bits 2 and 3
+		assertEquals(a.cardinality(), 2);
+		assertEquals(a, BitString.fromBinaryString("001100"));
+
+		a.set(4, 5, true); // set bit 4
+		assertEquals(a.cardinality(), 3);
+		assertEquals(a, BitString.fromBinaryString("011100"));
+		
+		a.set(0, 4, true); // set bits 0 to 3
+		assertEquals(a.cardinality(), 5);
+		assertEquals(a, BitString.fromBinaryString("011111"));
+		
+		a.set(5, 6, true); // set bit 5
+		assertEquals(a.cardinality(), 6);
+		assertEquals(a, BitString.fromBinaryString("111111"));
+	}
+
+	@Test
+	public void testSetRangeValue() {
+		BitString a = BitString.fromBinaryString("000000");
+		
+		assertEquals(a.cardinality(), 0);
+		a.set(2, 4, true); // set bits 2 and 3
+		assertEquals(a.cardinality(), 2);
+		assertEquals(a, BitString.fromBinaryString("001100"));
+
+		a.set(4, 5, true); // set bit 4
+		assertEquals(a.cardinality(), 3);
+		assertEquals(a, BitString.fromBinaryString("011100"));
+		
+		a.set(0, 4, true); // set bits 0 to 3
+		assertEquals(a.cardinality(), 5);
+		assertEquals(a, BitString.fromBinaryString("011111"));
+		
+		a.set(5, 6, true); // set bit 5
+		assertEquals(a.cardinality(), 6);
+		assertEquals(a, BitString.fromBinaryString("111111"));
+		
+		assertEquals(a.cardinality(), 6);
+		a.set(2, 4, false); // clear bits 2 and 3
+		assertEquals(a.cardinality(), 4);
+		assertEquals(a, BitString.fromBinaryString("110011"));
+
+		a.set(4, 5, false); // clear bit 4
+		assertEquals(a.cardinality(), 3);
+		assertEquals(a, BitString.fromBinaryString("100011"));
+		
+		a.set(0, 4, false); // clear bits 0 to 3
+		assertEquals(a.cardinality(), 1);
+		assertEquals(a, BitString.fromBinaryString("100000"));
+		
+		a.set(5, 6, false); // clear bit 5
+		assertEquals(a.cardinality(), 0);
+		assertEquals(a, BitString.fromBinaryString("000000"));
+		assertEquals(a, new BitString(6));
+	}
+
+	@Test
+	public void testSubVector() {
+		String s = "11001111010101011010";
+		BitString a = BitString.fromBinaryString(s);
+		
+		assertEquals(a.subVector(0, a.length()), a);
+		assertEquals(a.subVector(0, 2), BitString.fromBinaryString("10"));
+		assertEquals(a.subVector(0, 4), BitString.fromBinaryString("1010"));
+		assertEquals(a.subVector(0, 6), BitString.fromBinaryString("011010"));
+
+		assertEquals(a.subVector(14, 20), BitString.fromBinaryString("110011"));
+		assertEquals(a.subVector(16, 20), BitString.fromBinaryString("1100"));
+		assertEquals(a.subVector(18, 20), BitString.fromBinaryString("11"));
+
+		assertEquals(a.subVector(8, 12), BitString.fromBinaryString("0101"));
+	}
+	
+	@Test
+	public void testSubVectorDisjoint() {
+		String s = "11001111010101011010";
+		BitString a = BitString.fromBinaryString(s);
+		BitString b = a.subVector(0, a.length());
+		
+		assertEquals(a, b);
+		assertNotSame(a, b);
+		
+		a.not();
+		
+		assertNotEquals(a, b);
+	}
+
+	@Test
+	public void testXor() {
+		BitString a = BitString.fromBinaryString("11001111010101011010");
+		BitString b = new BitString(a);
+		BitString c = new BitString(a);
+		c.flip(0, c.length());
+		
+		BitString full = new BitString(a.length());
+		full.set(0, full.length());
+		BitString blank = new BitString(a.length());
+		
+		// xor with 000000 should return original string
+		a.xor(blank);
+		assertEquals( a, b );
+		assertNotEquals( a, blank );
+		
+		// xor with 111111 should return inverse
+		a.xor(full);
+		assertEquals( a, c );
+		assertNotEquals( a, b );
+	}
+	
+	@Test
+	public void testHammingDistance() {
+		String s = "11001111010101011010";
+		BitString a = BitString.fromBinaryString(s);
+		
+		BitString full = new BitString(a.length());
+		full.set(0, full.length());
+		BitString blank = new BitString(a.length());
+		
+		assertEquals(BitString.HammingDistance(a, blank), 12);
+		assertEquals(BitString.HammingDistance(a, full), 8);
+		assertEquals(BitString.HammingDistance(blank, full), 20);
+	}
 }
 
 // End ///////////////////////////////////////////////////////////////

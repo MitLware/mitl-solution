@@ -248,7 +248,7 @@ public final class BitString
 	{
 		if( fromIndex < 0 || fromIndex >= length() )
 			throw new IllegalArgumentException();
-		if( toIndex < 0 || toIndex >= length() )
+		if( toIndex <= 0 || toIndex > length() )
 			throw new IllegalArgumentException();
 		
 		impl.flip(fromIndex, toIndex);
@@ -320,8 +320,8 @@ public final class BitString
 	 */
 	public void not()
 	{
-		BitSet allOnes = new BitSet( impl.size() );
-		allOnes.flip( 0, allOnes.size() );
+		BitSet allOnes = new BitSet( length );
+		allOnes.flip( 0, length );
 		impl.xor( allOnes );
 	}
 	
@@ -365,7 +365,7 @@ public final class BitString
 	{
 		if( fromIndex < 0 || fromIndex >= length() )
 			throw new IllegalArgumentException();
-		if( toIndex < 0 || toIndex >= length() )
+		if( toIndex <= 0 || toIndex > length() )
 			throw new IllegalArgumentException();
 
 		impl.set( fromIndex, toIndex );
@@ -378,7 +378,7 @@ public final class BitString
 	{
 		if( fromIndex < 0 || fromIndex >= length() )
 			throw new IllegalArgumentException();
-		if( toIndex < 0 || toIndex >= length() )
+		if( toIndex <= 0 || toIndex > length() )
 			throw new IllegalArgumentException();
 
 		impl.set( fromIndex, toIndex, value );
