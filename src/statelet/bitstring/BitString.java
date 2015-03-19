@@ -214,7 +214,7 @@ public final class BitString
 	///////////////////////////////
 	
 	public boolean invariant() {
-		return impl.length() <= length() && impl.size() == length();
+		return impl.length() <= length() && impl.size() >= length();
 	}
 	
 	///////////////////////////////	
