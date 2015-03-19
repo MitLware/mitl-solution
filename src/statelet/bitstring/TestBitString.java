@@ -112,7 +112,7 @@ public class TestBitString {
 	}
 
 	@Test
-	public void testNot() {
+	public void testAndNot() {
 		BitString a = BitString.fromInt(15);
 		BitString b = new BitString(a);
 		
@@ -212,7 +212,7 @@ public class TestBitString {
 			cmp1[it.next()] = 1;
 		}
 		
-		// the order of bits returned by the iterator is reversed!
+		// the order of bits in the BitString is reversed from the string!
 		byte[] cmp2 = new byte[s.length()];
 		for (int i = 0; i < s.length(); i++) {
 			cmp2[cmp2.length - (i + 1)] = (byte) ((s.charAt(i) == '1') ? 1 : 0);
@@ -268,23 +268,161 @@ public class TestBitString {
 		b.flip(0, 3);
 		assertEquals(b, BitString.fromInt(7));
 	}
+
+	@Test
+	public void testGet() {
+		String s = "11001111010101011010";
+		BitString a = BitString.fromBinaryString(s);
+		
+		byte[] cmp1 = new byte[a.length()];
+		for (int i = 0; i < cmp1.length; i++) {
+			cmp1[i] = (byte) (a.get(i) ? 1 : 0);
+		}
+		
+		// the order of bits in the BitString is reversed from the string!
+		byte[] cmp2 = new byte[s.length()];
+		for (int i = 0; i < s.length(); i++) {
+			cmp2[cmp2.length - (i + 1)] = (byte) ((s.charAt(i) == '1') ? 1 : 0);
+		}
+		
+		assertArrayEquals(cmp1, cmp2);
+	}
 	
-//
-//		get(int bitIndex)
-//
-//		hashCode()
-//
-//		intersects(BitString rhs)
-//
-//		isEmpty()
-//
-//		length()
-//
-//		nextClearBit(int fromIndex)
-//
-//		nextSetBit(int fromIndex)
-//
-//		not()
+	@Test
+	public void testHashcode() {
+		// generate a few bitstrings and check that hashcodes are same if equal()
+		
+		String s = "11001111010101011010";
+		BitString a = BitString.fromBinaryString(s);
+		BitString b = BitString.fromBinaryString(s);
+		assertEquals(a, b);
+		assertEquals(a.hashCode(), b.hashCode());
+		
+		BitString c = BitString.fromInt(1);
+		BitString d = BitString.fromInt(1);
+		assertEquals(c, d);
+		assertEquals(c.hashCode(), d.hashCode());
+	}
+	
+	@Test
+	public void testIntersects() {
+		String s1 = "11001111010101011010";
+		String s2 = "11000111010101011010";
+		String s3 = "00001100010010101101";
+		String s4 = "00000000000000000000";
+		
+		BitString a1 = BitString.fromBinaryString(s1);
+		BitString a2 = BitString.fromBinaryString(s2);
+		BitString a3 = BitString.fromBinaryString(s3);
+		BitString a4 = BitString.fromBinaryString(s4);
+		
+		assertTrue(a1.intersects(a2));
+		assertTrue(a1.intersects(a3));
+		assertTrue(a2.intersects(a1));
+		assertTrue(a2.intersects(a3));
+		assertTrue(a3.intersects(a1));
+		assertTrue(a3.intersects(a2));
+		
+		assertFalse(a1.intersects(a4));
+		assertFalse(a2.intersects(a4));
+		assertFalse(a3.intersects(a4));
+
+		assertFalse(a4.intersects(new BitString(20)));
+	}
+
+	@Test
+	public void testIsEmpty() {
+		String s = "11001111010101011010";
+		BitString a = BitString.fromBinaryString(s);
+		assertFalse(a.isEmpty());
+		
+		a.clear();
+		assertTrue(a.isEmpty());
+		
+		assertTrue(new BitString(32).isEmpty());
+	}
+
+	@Test
+	public void testLength() {
+		BitString a = new BitString(32);
+		
+		assertNotEquals(a, BitString.fromBinaryString(""));
+		assertNotEquals(a, BitString.fromBinaryString("0"));
+		assertEquals(a, BitString.fromBinaryString("00000000000000000000000000000000"));
+		assertEquals(a, BitString.fromInt(0));
+		
+		BitString b = BitString.fromLong(0L);
+		assertNotEquals(a, b);
+		assertEquals(b, BitString.fromLong(0L, 64));
+		
+		BitString c = new BitString(new BitSet(32), 0, 32);
+		assertEquals(a, c);
+		assertNotEquals(b, c);
+		
+		BitSet bs = new BitSet(128);
+		assertEquals(a, new BitString(bs, 0, 32));
+		assertEquals(b, new BitString(bs, 0, 64));
+		assertEquals(a, new BitString(bs, 0, 32));
+	}
+	
+	@Test
+	public void testNextClearBit() {
+		String s = "11001111010101011010";
+		BitString a = BitString.fromBinaryString(s);
+		
+		assertEquals(a.nextClearBit(0), 0);
+		assertEquals(a.nextClearBit(1), 2);
+		assertEquals(a.nextClearBit(2), 2);
+
+		assertEquals(a.nextClearBit(18), -1);
+		assertEquals(a.nextClearBit(19), -1);
+		
+		assertEquals(new BitString(32).nextClearBit(0), 0);
+	}
+	
+	@Test
+	public void testNextSetBit() {
+		String s = "11001111010101011010";
+		BitString a = BitString.fromBinaryString(s);
+		
+		assertEquals(a.nextSetBit(0), 1);
+		assertEquals(a.nextSetBit(1), 1);
+		assertEquals(a.nextSetBit(2), 3);
+
+		assertEquals(a.nextSetBit(18), 18);
+		assertEquals(a.nextSetBit(19), 19);
+		
+		assertEquals(new BitString(32).nextSetBit(0), -1);
+	}
+
+	@Test
+	public void testNot() {
+		String s1 = "11001111010101011010";
+		String s2 = "00110000101010100101";
+		
+		BitString a1 = BitString.fromBinaryString(s1);
+		BitString a2 = BitString.fromBinaryString(s2);
+		
+		assertNotEquals(a1, a2);
+		assertFalse(a1.intersects(a2));
+		
+		a1.not();
+		
+		assertEquals(a1, a2);
+		assertTrue(a1.intersects(a2));
+		
+		BitString a3 = new BitString(20);
+		BitString a4 = new BitString(20);
+		a4.set(0, 19);
+		
+		assertNotEquals(a3, a4);
+		assertFalse(a3.intersects(a4));
+		
+		a3.not();
+		assertEquals(a3, a4);
+		assertTrue(a3.intersects(a4));
+	}
+	
 //
 //		or(BitString rhs)
 //
