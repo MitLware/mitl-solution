@@ -1,241 +1,425 @@
+/*
+ * Copyright (C) Jerry Swan, 2010-2012.
+ * 
+ * This file is part of Hyperion, a hyper-heuristic solution-domain framework.
+ * 
+ * Hyperion is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Hyperion is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Hyperion. If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+//////////////////////////////////////////////////////////////////////
 
 package statelet.bitvector;
 
-import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Random;
+import java.util.function.Consumer;
 
-public final class BitVector {
-	
-	private final long [] bits;
-	private final int numBits;
-	// private final int numWords;
-	
-	private int numWords() { return bits.length; } 
+//////////////////////////////////////////////////////////////////////
+
+public final class BitVector 
+{
+	private BitSet impl;
+	private final int length;
 	
 	///////////////////////////////
-
-	// number of 64 bit words it would take to hold numBits
-	private static int numLongs( int numBits ) {
-		int numLong = numBits >>> 6;
-		if( ( numBits & 63 ) != 0 )
-			++numLong;
+	
+	public static BitVector fromInt( int x )
+	{
+		BitVector result = new BitVector( 32 );
+		for( int i=0; i<32; ++i )
+			if( ( x & ( 1 << i ) ) != 0 )
+				result.set( i );
 		
-		return numLong;
+		return result;
+	}
+
+	public static BitVector fromLong( long x )
+	{
+		return fromLong( x, 64 );
+	}
+
+	public static BitVector fromLong( long x, int numBits )
+	{
+		BitVector result = new BitVector( numBits );
+		for( int i=0; i<Math.min( 64, numBits ); ++i )
+			if( ( x & ( 1L << i ) ) != 0L )
+				result.set( i );
+		
+		return result;
+	}
+	
+	public static BitVector fromBinaryString( String x )
+	{
+		BitVector result = new BitVector( x.length() );
+		for( int i=0; i<x.length(); ++i )
+			if( x.charAt( i ) == '1' )
+				result.set( x.length() - i - 1 );
+			else if( x.charAt( i ) != '0' )
+				throw new IllegalArgumentException();
+		
+		return result;
+	}
+	
+    /**
+     * Creates a bit vector large enough to explicitly represent 
+     * bits with indices in the range 0 through nbits-1.	
+     */
+	public BitVector( int nbits )
+	{
+		impl = new BitSet( nbits );
+		length = nbits;
+	}
+
+	public BitVector( int nbits, Random random )
+	{
+		impl = new BitSet( nbits );
+		length = nbits;
+		for( int i=0; i<length; ++i )
+			impl.set( i, random.nextBoolean() );
+	}
+	
+	public BitVector( BitSet x, int fromIndex, int toIndex )
+	{
+		impl = x.get( fromIndex, toIndex );
+		this.length = toIndex - fromIndex;
+	}
+
+	/*******
+	public BitVector( BigInteger x, int nbits )
+	{
+		final boolean xNegative = x.compareTo( BigInteger.ZERO ) < 0;
+		final int xLength = xNegative ? x.bitLength() + 1 : x.bitLength();
+		
+		length = nbits;
+		impl = new BitSet( length );
+		for( int i=0; i<Math.min( xLength, nbits ); ++i )
+			if( x.testBit( i ) )
+				impl.set( i );
+		if( xNegative && nbits > xLength + 1 )
+			impl.set( xLength + 1 );			
+	}
+	*******/
+	
+	public BitVector( BitVector rhs )
+	{
+		impl = (BitSet)rhs.impl.clone();
+		length = rhs.length;
+	}
+	
+	///////////////////////////////
+	
+	/**
+	 * 	Performs a logical AND of this target bit vector with the argument bit vector. 
+	 */
+	public void and( BitVector rhs )
+	{
+		if( length() != rhs.length() )
+			throw new IllegalArgumentException();
+		
+		impl.and( rhs.impl );
+	}
+
+	/**
+	 * 	Clears all of the bits in this BitVector whose corresponding bit is rhs in the specified BitVector. 
+	 */
+	public void andNot( BitVector rhs ) 
+	{
+		if( length() != rhs.length() )
+			throw new IllegalArgumentException();
+		
+		impl.andNot( rhs.impl );
+	}
+	
+	/**
+	 * Returns the number of bits set to true in this BitVector.
+	 */
+	public int cardinality() { return impl.cardinality(); }
+	
+
+	/**
+	 * Sets all of the bits in this BitVector to false.
+	 */ 
+	public void clear() { impl.clear(); }
+	
+	/**
+	 * Sets the bit specified by the index to false.
+	 */
+	public void clear(int bitIndex) { impl.clear(bitIndex); }
+    
+	/**
+	 * Sets the bits from the specified fromIndex(inclusive) to the specified toIndex(exclusive) to false. 
+	 */
+	public void clear(int fromIndex, int toIndex) { impl.clear(fromIndex, toIndex); }
+	
+	///////////////////////////////
+ 
+	private static final class SparseIterator 
+	implements Iterator< Integer > 
+	{
+	    private final BitSet bitset_;
+	    private int index_ = -1;
+
+	    ///////////////////////////////
+	    
+	    public SparseIterator( BitSet bitset ) 
+	    {
+	        bitset_ = bitset;
+	        index_ = bitset.nextSetBit( 0 ); 
+	    }
+
+	    public boolean hasNext() 
+	    {
+	    	return index_ != -1;
+	    }
+
+	    public Integer next() 
+	    {
+	        if( !hasNext() )
+	            throw new NoSuchElementException();
+	        
+	        int result = index_;
+	        index_ = bitset_.nextSetBit( ++index_ );
+	        return result;
+	    }
+
+	    public void remove() {
+	        throw new UnsupportedOperationException();
+	    }
+
+		@Override
+		public void forEachRemaining(Consumer<? super Integer> action) {
+			while( hasNext() )
+				action.accept(next());	    
+		}
+	}
+	
+	///////////////////////////////
+	
+	public Iterator< Integer > sparseIterator() {
+		return new SparseIterator( impl );
+	}
+	
+	///////////////////////////////
+	
+	public boolean invariant() {
+		return impl.length() <= length() && impl.size() >= length();
 	}
 	
 	///////////////////////////////	
 	
-	public BitVector( int numBits ) {
-		this.numBits = numBits;
-		bits = new long[ numLongs( numBits ) ];
-		// numWords = bits.length;
-	}
-
-	public BitVector( BitVector rhs ) {
-		bits = rhs.bits.clone();
-		numBits = rhs.numBits;
-	}
-	
-	/***
-	public BitVector( long [] storedBits, int numBits ) {
-		this.numWords = numLongs( numBits );
-		if (numWords > storedBits.length)
-			throw new IllegalArgumentException("The given long array is too small  to hold " + numBits + " bits");
-
-		this.numBits = numBits;
-		this.bits = storedBits;
-	}
-	***/
-	
-	///////////////////////////////
-	
-	public int length() { return numBits; }
-
-	public int cardinality() {
-		return (int) pop_array(bits, 0, bits.length);
-	}
-
-	public boolean get( int index ) {
-		assert index >= 0 && index < numBits: "index=" + index + ", numBits=" + numBits;
-		int i = index >> 6;               // div 64
-		// signed shift will keep a negative index and force an
-		// array-index-out-of-bounds-exception, removing the need for an explicit check.
-		long bitmask = 1L << index;
-		return (bits[i] & bitmask) != 0;
-	}
-
-	public void set(int index) {
-		assert index >= 0 && index < numBits: "index=" + index + ", numBits=" + numBits;
-		int wordNum = index >> 6;      // div 64
-		long bitmask = 1L << index;
-		bits[wordNum] |= bitmask;
-	}
-
-	public boolean getAndSet(int index) {
-		assert index >= 0 && index < numBits;
-		int wordNum = index >> 6;      // div 64
-		long bitmask = 1L << index;
-		boolean val = (bits[wordNum] & bitmask) != 0;
-		bits[wordNum] |= bitmask;
-		return val;
-	}
-
-	public void clear(int index) {
-		assert index >= 0 && index < numBits;
-		int wordNum = index >> 6;
-		long bitmask = 1L << index;
-		bits[wordNum] &= ~bitmask;
-	}
-
-	public boolean getAndClear(int index) {
-		assert index >= 0 && index < numBits;
-		int wordNum = index >> 6;      // div 64
-		long bitmask = 1L << index;
-		boolean val = (bits[wordNum] & bitmask) != 0;
-		bits[wordNum] &= ~bitmask;
-		return val;
-	}
-
-	/** Returns the index of the first set bit starting at the index specified.
-	 * -1 is returned if there are no more set bits.
-	 */
-	public int nextSetBit(int index) {
-		assert index >= 0 && index < numBits : "index=" + index + ", numBits=" + numBits;
-		int i = index >> 6;
-		long word = bits[i] >> index;  // skip all the bits to the right of index
-
-		if( word!=0 )
-			return index + Long.numberOfTrailingZeros(word);
-
-		while(++i < numWords()) {
-			word = bits[i];
-			if( word != 0 )
-				return (i<<6) + Long.numberOfTrailingZeros(word);
-		}
-
-		return -1;
-	}
-
-	/** Returns the index of the last set bit before or on the index specified.
-   	 * -1 is returned if there are no more set bits.
-   	 */
-	public int prevSetBit(int index) {
-		assert index >= 0 && index < numBits: "index=" + index + " numBits=" + numBits;
-		int i = index >> 6;
-		final int subIndex = index & 0x3f;  // index within the word
-		long word = (bits[i] << (63-subIndex));  // skip all the bits to the left of index
-
-		if( word != 0 )
-			return (i << 6) + subIndex - Long.numberOfLeadingZeros(word);
-
-		while (--i >= 0) {
-			word = bits[i];
-			if (word !=0 )
-				return (i << 6) + 63 - Long.numberOfLeadingZeros(word);
-		}
-
-		return -1;
-	}
-
-	public void or(BitVector other) {
-		or(other.bits, other.numWords());
-	}
-  
-	private void or(final long[] otherArr, final int otherNumWords) {
-		assert otherNumWords <= numWords() : "numWords=" + numWords() + ", otherNumWords=" + otherNumWords;
-		final long[] thisArr = this.bits;
-		int pos = Math.min(numWords(), otherNumWords);
-		while (--pos >= 0)
-			thisArr[pos] |= otherArr[pos];
-	}
-  
-	public void xor(BitVector other) {
-		assert other.numWords() <= numWords() : "numWords=" + numWords() + ", other.numWords=" + other.numWords();
-		final long[] thisBits = this.bits;
-		final long[] otherBits = other.bits;
-		int pos = Math.min(numWords(), other.numWords());
-		while( --pos >= 0 )
-			thisBits[pos] ^= otherBits[pos];
-	}
-  
-
-	public boolean intersects(BitVector other) {
-		int pos = Math.min(numWords(), other.numWords());
-		while(--pos>=0 )
-			if( (bits[pos] & other.bits[pos]) != 0 ) 
-				return true;
-
-		return false;
-	}
-
-	public void and(BitVector other) {
-		and(other.bits, other.numWords());
-	}
-  
-	private void and(final long[] otherArr, final int otherNumWords) {
-		final long[] thisArr = this.bits;
-		int pos = Math.min(this.numWords(), otherNumWords);
-		while(--pos >= 0)
-			thisArr[pos] &= otherArr[pos];
-
-		if (this.numWords() > otherNumWords)
-			Arrays.fill(thisArr, otherNumWords, this.numWords(), 0L);
-	}
-
-	public void andNot(BitVector other) {
-		andNot(other.bits, other.bits.length);
-	}
-  
-	private void andNot(final long[] otherArr, final int otherNumWords) {
-		final long[] thisArr = this.bits;
-		int pos = Math.min(this.numWords(), otherNumWords);
-		while(--pos >= 0)
-			thisArr[pos] &= ~otherArr[pos];
-	}
-
-	@Override
-	public BitVector clone() {
-//		long[] bits = new long[this.bits.length];
-//		System.arraycopy(this.bits, 0, bits, 0, bits.length);
-//		return new BitVector(bits, numBits);
-		return new BitVector( this );
-	}
-
-	@Override
-	public int hashCode() {
-		long h = 0;
-		for (int i = numWords(); --i>=0;) {
-			h ^= bits[i];
-			h = (h << 1) | (h >>> 63); // rotate left
-		}
-		
-		// fold leftmost bits into right and add a constant to prevent
-		// empty sets from returning 0, which is too common.
-		return (int) ((h>>32) ^ h) + 0x98761234;
-	}
-	
-	/** returns true if both sets have the same bits set */
-	@Override
-	public boolean equals( Object o ) {
-		if( this == o )
-			return true;
-		else if( !( o instanceof BitVector ) )
+	public BitVector clone() { return new BitVector( this ); } 
+    
+	public boolean equals( Object obj )
+	{
+		if( !( obj instanceof BitVector ) )
 			return false;
-		else {
-			BitVector other = (BitVector) o;
-			if( numBits != other.numBits )
-				return false;
-			return Arrays.equals(bits, other.bits);
-		}
+		
+		BitVector rhs = (BitVector)obj;
+		return length == rhs.length && impl.equals( rhs.impl );
 	}
-  
-	private static long pop_array(long[] arr, int wordOffset, int numWords) {
-		long popCount = 0;
-		for (int i = wordOffset, end = wordOffset + numWords; i < end; ++i)
-	      popCount += Long.bitCount(arr[i]);
 
-		return popCount;
+    /**
+     * Sets the bit at the specified index to to the complement of its current value.
+     */
+	public void flip( int bitIndex )
+	{
+		if( bitIndex < 0 || bitIndex >= length() )
+			throw new IllegalArgumentException();
+		
+		impl.flip(bitIndex);
+	}
+
+	/**
+	 * Sets each bit from the specified fromIndex(inclusive) to the specified toIndex(exclusive) to the complement of its current value.
+	 */
+	public void flip(int fromIndex, int toIndex)
+	{
+		if( fromIndex < 0 || fromIndex >= length() )
+			throw new IllegalArgumentException();
+		if( toIndex <= 0 || toIndex > length() )
+			throw new IllegalArgumentException();
+		
+		impl.flip(fromIndex, toIndex);
+	}
+    
+	/**
+	 * Returns the value of the bit with the specified index. 
+	 */
+	public boolean get(int bitIndex)
+	{
+		if( bitIndex < 0 || bitIndex >= length() )
+			throw new IllegalArgumentException();
+		
+		return impl.get( bitIndex );
+	}
+    
+	public int hashCode() { return impl.hashCode();	}
+
+    /**
+     * Returns true if the specified BitVector has any bits rhs to true that are also rhs to true in this BitVector.
+     */
+	public boolean intersects(BitVector rhs)
+	{
+		if( length() != rhs.length() )
+			throw new IllegalArgumentException();
+		
+		return impl.intersects( rhs.impl );
+	}
+ 
+	/**
+	 * Returns true if this BitVector contains no bits that are rhs to true.
+	 */
+	public boolean isEmpty() { return impl.isEmpty(); }
+    
+	/**
+	 * Returns the length of this BitVector.
+	 * Note that this is not the same as BitSet.length, which
+	 * returns the logical size, i.e. the  
+	 */
+	public int length() { return length; } 
+ 
+	/**
+	 * Returns the index of the first bit that is rhs to false that occurs on or after the specified starting index. 
+	 */
+	public int nextClearBit(int fromIndex)
+	{
+		if( fromIndex < 0 || fromIndex >= length() )
+			throw new IllegalArgumentException();
+		
+		int result = impl.nextClearBit( fromIndex );
+		if( result == length )
+			result = -1;
+		return result;
+	}
+ 
+	/**
+	 * Returns the index of the first bit that is rhs to true that occurs on or after the specified starting index. 
+	 */
+	public int nextSetBit(int fromIndex)
+	{
+		if( fromIndex < 0 || fromIndex >= length() )
+			throw new IllegalArgumentException();
+		
+		return impl.nextSetBit( fromIndex );		
+	}
+
+	/**
+	 * 	Performs a logical NOT of this bit vector 
+	 */
+	public void not()
+	{
+		BitSet allOnes = new BitSet( length );
+		allOnes.flip( 0, length );
+		impl.xor( allOnes );
+	}
+	
+	/**
+	 * Performs a logical OR of this bit vector with the bit vector argument. 
+	 */
+	public void or(BitVector rhs)
+	{
+		if( length() != rhs.length() )
+			throw new IllegalArgumentException();
+		
+		impl.or( rhs.impl );
+	}
+    
+	/**
+	 * Sets the bit at the specified index to true.
+	 */
+	public void set( int bitIndex )
+	{
+		if( bitIndex < 0 || bitIndex >= length() )
+			throw new IllegalArgumentException();
+
+		impl.set( bitIndex );
+	}
+    
+	/**
+	 * Sets the bit at the specified index to the specified value. 
+	 */
+	public void set(int bitIndex, boolean value)
+	{
+		if( bitIndex < 0 || bitIndex >= length() )
+			throw new IllegalArgumentException();
+
+		impl.set( bitIndex, value );
+	}
+
+	/**
+     * Sets the bits from the specified fromIndex(inclusive) to the specified toIndex(exclusive) to true.
+     */
+	public void set(int fromIndex, int toIndex)
+	{
+		if( fromIndex < 0 || fromIndex >= length() )
+			throw new IllegalArgumentException();
+		if( toIndex <= 0 || toIndex > length() )
+			throw new IllegalArgumentException();
+
+		impl.set( fromIndex, toIndex );
+	}
+
+	/**
+	 * Sets the bits from the specified fromIndex(inclusive) to the specified toIndex(exclusive) to the specified value. 
+	 */
+	public void set(int fromIndex, int toIndex, boolean value)
+	{
+		if( fromIndex < 0 || fromIndex >= length() )
+			throw new IllegalArgumentException();
+		if( toIndex <= 0 || toIndex > length() )
+			throw new IllegalArgumentException();
+
+		impl.set( fromIndex, toIndex, value );
+	}
+
+	public BitVector subVector( int fromIndex, int toIndex )
+	{
+		return new BitVector( impl, fromIndex, toIndex );
+	}
+	
+	public String toString() 
+	{
+		StringBuffer result = new StringBuffer();
+		for( int i=0; i<length(); ++i )
+			result.append( impl.get( length() - i - 1 ) ? "1" : "0" );
+		
+		return result.toString();
+	}
+    
+	/**
+	 * Performs a logical XOR of this bit set with the bit set argument. 
+	 */
+	public void xor(BitVector rhs)
+	{
+		if( length() != rhs.length() )
+			throw new IllegalArgumentException();
+		
+		impl.xor( rhs.impl );
+	}
+	
+	public static int HammingDistance( BitVector a, BitVector b )
+	{
+		if( a.length() != b.length() )
+			throw new IllegalArgumentException();
+		
+		BitSet aa = (BitSet)a.impl.clone();
+		aa.xor( b.impl );
+		return aa.cardinality();
 	}
 }
 
 // End ///////////////////////////////////////////////////////////////
-
