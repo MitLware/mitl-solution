@@ -22,6 +22,8 @@
 
 package statelet.bitvector;
 
+import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -73,7 +75,42 @@ public final class BitVector
 		
 		return result;
 	}
+
+	///////////////////////////////
+
+	/*
+	 * From http://stackoverflow.com/questions/29526985/java-from-biginteger-to-bitset-and-back 
+	 * BigInteger is big-endian andBitSet is little-endian, so the bytes will be reversed when 
+	 * trying to convert directly from one to the other via toByteArray(). 
+	 * The simplest solution is to just reverse them again. 
+	 */
 	
+	public BitVector( int numBits, BigInteger x ) {
+	
+		length = numBits;
+		
+		byte [] sourceArray = x.toByteArray();		
+		if( numBits > sourceArray.length * 8 )
+			throw new IllegalArgumentException();
+		
+		impl = BitSet.valueOf(reverse( sourceArray ));
+	}
+	
+	public BigInteger toBigInteger() {
+		return new BigInteger(1, reverse(impl.toByteArray() ) );		
+	}
+
+	private static byte[] reverse(byte[] bytes) {
+	    for(int i = 0; i < bytes.length/2; i++) {
+	        byte temp = bytes[i];
+	        bytes[i] = bytes[bytes.length-i-1];
+	        bytes[bytes.length-i-1] = temp;
+	    }
+	    return bytes;
+	}	
+	
+	///////////////////////////////	
+		
     /**
      * Creates a bit vector large enough to explicitly represent 
      * bits with indices in the range 0 through nbits-1.	

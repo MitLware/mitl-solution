@@ -62,6 +62,13 @@ public class TestBitVector {
 		
 		assertEquals(a, b);
 	}
+
+	@Test
+	public void testConstructorsBigInts() {
+		java.math.BigInteger source = new java.math.BigInteger( "101011111", 2 );
+		BitVector a = new BitVector( 16, source );
+		assertEquals( source, a.toBigInteger() );
+	}
 	
 	@Test
 	public void testEqualsBlanks() {
