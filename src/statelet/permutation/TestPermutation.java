@@ -10,16 +10,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 
-import jeep.lang.Diag;
 import jeep.math.UnitInterval;
 
 import org.junit.Test;
-
-import hyperion3.Mutate;
-import statelet.permutation.examples.H1;
-// import statelet.permutation.examples.H2;
-import statelet.permutation.examples.H3;
 
 //////////////////////////////////////////////////////////////////////
 
@@ -70,13 +65,35 @@ public final class TestPermutation {
 		
 		ArrayForm p1 = new ArrayForm( 10, random );
 		
-		List< Mutate< ArrayForm > 
-			> mutators = new ArrayList< Mutate< ArrayForm > >();
-		mutators.add( new H1( random ) );
-	//	mutators.add( new H2() );
-		mutators.add( new H3( random ) );
-		// mutators.add( new H5_FlowShop() );
-		// mutators.add( new H5_TSP() );		
+		Function< ArrayForm, ArrayForm > randomInsert = ( ArrayForm x ) -> {
+			ArrayForm result = new ArrayForm( x );
+			result.randomInsert( random );
+			return result;
+		};
+
+		Function< ArrayForm, ArrayForm > randomShuffle = ( ArrayForm x ) -> {
+			ArrayForm result = new ArrayForm( x );
+			result.randomShuffle( random );
+			return result;
+		};
+
+		Function< ArrayForm, ArrayForm > invert = ( ArrayForm x ) -> {
+		
+			final int from = random.nextInt( x.size() - 1 );
+			int to;
+			while( ( to = random.nextInt( x.size() ) ) <= from )
+				;
+
+			ArrayForm result = new ArrayForm( x );
+			result.invert( from, to );
+			return result;			
+		};		
+		
+		List< Function< ArrayForm, ArrayForm >
+			> mutators = new ArrayList< Function< ArrayForm, ArrayForm > >();
+		mutators.add( randomInsert );
+		mutators.add( randomShuffle );
+		mutators.add( invert );		
 		
 		final int numTrials = 10;
 		for( int i=0; i<numTrials; ++i )
