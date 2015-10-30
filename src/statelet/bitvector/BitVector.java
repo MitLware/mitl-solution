@@ -348,8 +348,13 @@ public final class BitVector
 	 */
 	public int nextSetBit(int fromIndex)
 	{
-		if( fromIndex < 0 || fromIndex >= length() )
+		if( fromIndex < 0) // || fromIndex >= length() )
 			throw new IllegalArgumentException();
+		
+		// the contract at http://docs.oracle.com/javase/7/docs/api/java/util/BitSet.html#nextSetBit(int) requires 
+		// this behaviour rather than the original throwing of an exception above
+		if (fromIndex >= length())
+			return -1;
 		
 		return impl.nextSetBit( fromIndex );		
 	}
