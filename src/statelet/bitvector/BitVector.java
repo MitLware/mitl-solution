@@ -23,7 +23,6 @@
 package statelet.bitvector;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -275,7 +274,7 @@ public final class BitVector
 	public void flip( int bitIndex )
 	{
 		if( bitIndex < 0 || bitIndex >= length() )
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Index is out of bounds [0-"+length()+"]: " + bitIndex);
 		
 		impl.flip(bitIndex);
 	}
