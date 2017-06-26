@@ -22,8 +22,8 @@ public final class TestPermutation {
 
 	@Test
 	public void test() {
-		final long seed = System.currentTimeMillis();
-		// final long seed = 0x12345678;
+
+		final long seed = 0x12345678;
 		System.out.println( "random seed: " + seed );
 		Random random = new Random( seed );
 
@@ -57,8 +57,8 @@ public final class TestPermutation {
 	@Test	
 	public void testRandomMutatorSequence()
 	{
-		final long seed = System.currentTimeMillis();
-		// final long seed = 0x12345678;
+
+		final long seed = 0x12345678;
 
 		System.out.println( "random seed: " + seed );
 		Random random = new Random( seed );
@@ -109,8 +109,7 @@ public final class TestPermutation {
 	@Test
 	public void testInsertion()
 	{
-		final long seed = System.currentTimeMillis();
-		// final long seed = 0x12345678;
+		final long seed = 0x12345678;
 		System.out.println( "random seed: " + seed );
 		Random random = new Random( seed );
 		
