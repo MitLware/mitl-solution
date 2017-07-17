@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.mitlware.solution.util.Collections;
 
-import jeep.lang.Diag;
+import org.mitlware.support.lang.Diag;
 
 //////////////////////////////////////////////////////////////////////
 
@@ -92,9 +92,8 @@ implements Permutation, Comparable< Cycle >
 	}
 
 	@Override
-	public int compareTo( Cycle o ) 
-	{
-		return jeep.util.Arrays.lexicographicalCompare( cycle_, o.cycle_ );
+	public int compareTo( Cycle o ) {
+		return org.mitlware.support.util.MitlArrays.lexicographicalCompare( cycle_, o.cycle_ );
 	}
 
 	@Override

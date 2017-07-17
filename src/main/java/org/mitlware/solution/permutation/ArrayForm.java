@@ -28,9 +28,8 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import metaxa.random.Sampling;
-
-import jeep.math.UnitInterval;
+import org.mitlware.support.random.Sampling;
+import org.mitlware.support.math.UnitInterval;
 
 //////////////////////////////////////////////////////////////////////
 
@@ -301,7 +300,7 @@ implements Permutation, Comparable< ArrayForm >
 	///////////////////////////////	
 	
 	public int compareTo( ArrayForm rhs ) {
-		return jeep.util.Arrays.lexicographicalCompare( perm_, rhs.perm_ );
+		return org.mitlware.support.util.MitlArrays.lexicographicalCompare( perm_, rhs.perm_ );
 	}
 
 	public int hashCode() {
@@ -319,8 +318,7 @@ implements Permutation, Comparable< ArrayForm >
 	
 	///////////////////////////////
 	
-	public String toString()
-	{
+	public String toString() {
 		return Arrays.toString( perm_ );
 	}
 	

@@ -12,7 +12,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
 
-import jeep.math.UnitInterval;
+import org.mitlware.support.math.UnitInterval;
 
 import org.junit.Test;
 

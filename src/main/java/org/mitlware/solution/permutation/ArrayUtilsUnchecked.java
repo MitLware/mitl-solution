@@ -32,7 +32,7 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
 
-import jeep.lang.Diag;
+import org.mitlware.support.lang.Diag;
 
 //////////////////////////////////////////////////////////////////////
 

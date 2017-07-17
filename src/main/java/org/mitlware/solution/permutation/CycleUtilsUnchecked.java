@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import jeep.lang.Diag;
+import org.mitlware.support.lang.Diag;
 
 //////////////////////////////////////////////////////////////////////
 
