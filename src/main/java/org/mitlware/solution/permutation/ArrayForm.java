@@ -28,20 +28,19 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import org.mitlware.support.random.Sampling;
+import org.mitlware.support.util.Sampling;
 import org.mitlware.support.math.UnitInterval;
 
 //////////////////////////////////////////////////////////////////////
 
 public final class ArrayForm
-implements Permutation, Comparable< ArrayForm >
-{
+implements Permutation, Comparable< ArrayForm > {
+
 	private int	[] perm_;
 	
 	///////////////////////////////
 	
-	public ArrayForm( int n ) 
-	{
+	public ArrayForm( int n ) {
 		if( n < 0 )
 			throw new IllegalArgumentException( "Invalid statelet.permutation size" );
 		
@@ -53,16 +52,14 @@ implements Permutation, Comparable< ArrayForm >
 		assert invariant();
 	}
 
-	public ArrayForm( int n, Random random ) 
-	{
+	public ArrayForm( int n, Random random ) {
 		this( n );
 		randomShuffle( random );
 		
 		assert invariant();		
 	}
 	
-	public ArrayForm( int ... perm ) 
-	{
+	public ArrayForm( int ... perm ) {
 		if( !ArrayUtilsUnchecked.isPermutation( perm ) )
 			throw new IllegalArgumentException();
 		
@@ -72,8 +69,7 @@ implements Permutation, Comparable< ArrayForm >
 		assert invariant();		
 	}
 
-	public ArrayForm( ArrayForm rhs ) 
-	{
+	public ArrayForm( ArrayForm rhs ) {
 		perm_ = (int [])rhs.perm_.clone();
 		assert invariant();		
 	}
@@ -81,14 +77,12 @@ implements Permutation, Comparable< ArrayForm >
 	///////////////////////////////
 
 	@Override
-	public int minPreimage() 
-	{
+	public int minPreimage() {
 		return perm_.length - 1;
 	}
 
 	@Override
-	public int maxPreimage() 
-	{
+	public int maxPreimage() {
 		return perm_.length;
 	}
 	
