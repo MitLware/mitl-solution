@@ -39,16 +39,9 @@ public final class TestPermutation {
 		for( int i=0; i<numTrials; ++i )		
 			p1.randomInsert( random );
 		
-		for( int i=0; i<numTrials; ++i )
-		{
+		for( int i=0; i<numTrials; ++i ) {
 			UnitInterval mutationDegree = new UnitInterval( random.nextDouble() );			
 			p1.randomShuffleSubset( mutationDegree, random );
-		}
-		
-		for( int i=0; i<numTrials; ++i )
-		{
-			UnitInterval mutationDegree = new UnitInterval( random.nextDouble() );			
-			p1.nOpt( mutationDegree, random );
 		}
 	}
 	
@@ -96,19 +89,16 @@ public final class TestPermutation {
 		mutators.add( invert );		
 		
 		final int numTrials = 10;
-		for( int i=0; i<numTrials; ++i )
-		{
+		for( int i=0; i<numTrials; ++i ) {
 			// UnitInterval mutationDegree = new UnitInterval( random.nextDouble() ); 
-			p1 = mutators.get( random.nextInt( mutators.size() ) 
-				).apply( p1 );
+			p1 = mutators.get( random.nextInt( mutators.size() ) ).apply( p1 );
 		}
 	}
 	
 	///////////////////////////////
 	
 	@Test
-	public void testInsertion()
-	{
+	public void testInsertion()	{
 		final long seed = 0x12345678;
 		System.out.println( "random seed: " + seed );
 		Random random = new Random( seed );
@@ -147,8 +137,7 @@ public final class TestPermutation {
 	///////////////////////////////
 	
 	@Test
-	public void testMultiply()
-	{
+	public void testMultiply() {
 		{
 			int [] p1 = new int [] { 1,2,3,0 };
 			int [] p2 = new int [] { 3,2,0,1 };		
@@ -199,8 +188,7 @@ public final class TestPermutation {
 	///////////////////////////////
 	
 	@Test
-	public void testCycles()
-	{
+	public void testCycles() {
 		{
 			int [] perm = new int [] { 0,1,2 };		
 			Set< Cycle > disjointCycles = CycleUtilsUnchecked.fromArray( 

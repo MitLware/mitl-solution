@@ -1,3 +1,39 @@
+// Parts of the code in this file are adapted from the python library SymPy, 
+// bearing the following (new BSD) license:
+
+/*********************************************************************
+
+Copyright (c) 2006-2017 SymPy Development Team
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+  a. Redistributions of source code must retain the above copyright notice,
+     this list of conditions and the following disclaimer.
+  b. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+  c. Neither the name of SymPy nor the names of its contributors
+     may be used to endorse or promote products derived from this software
+     without specific prior written permission.
+
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
+DAMAGE.
+
+*********************************************************************/
+
 /**
  * 
 [1] Skiena, S. 'Permutations.' 1.1 in Implementing Discrete Mathematics
@@ -26,13 +62,14 @@
     	
 package org.mitlware.solution.permutation;
 
+import org.mitlware.support.util.*;
 
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
 
-import org.mitlware.support.lang.Diag;
+import org.mitlware.Diag;
 
 //////////////////////////////////////////////////////////////////////
 
@@ -61,8 +98,7 @@ final class ArrayUtilsUnchecked {
 
 	///////////////////////////////
 
-	public static int [] multiply( int [] p1, int [] p2 )
-	{
+	public static int [] multiply( int [] p1, int [] p2 ) {
 		assert( isPermutation( p1 ) );
 		assert( isPermutation( p2 ) );
 		assert( p1.length == p2.length );		
@@ -78,24 +114,21 @@ final class ArrayUtilsUnchecked {
 	///////////////////////////////
 	
 	public static int []
-	divide( int [] p1, int [] p2 )
-	{
+	divide( int [] p1, int [] p2 ) {
 		return multiply( p1, invert( p2 ) );
 	}
 
 	///////////////////////////////
 	
 	public static int [] 
-	mod( int [] p1, int [] p2 )
-	{
+	mod( int [] p1, int [] p2 )	{
 		return multiply( invert( p1 ), p2 );
 	}
 	
 	///////////////////////////////
 	
 	public static int [] 
-	invert( int [] p )
-	{
+	invert( int [] p ) {
 		assert( isPermutation( p ) );
 		
 		int [] result = new int [ p.length ]; 
@@ -109,8 +142,7 @@ final class ArrayUtilsUnchecked {
 	///////////////////////////////
 	
 	public static int [] 
-	add( int [] p1, int [] p2 )
-	{
+	add( int [] p1, int [] p2 )	{
 		assert( p1.length == p2.length );
 		
 		int [] a = inversionVector( p1 );
@@ -126,8 +158,7 @@ final class ArrayUtilsUnchecked {
 	///////////////////////////////
 	
 	public static int []
-	subtract( int [] p1, int [] p2 )
-	{
+	subtract( int [] p1, int [] p2 ) {
 		assert( isPermutation( p1 ) );
 		assert( isPermutation( p2 ) );
 		assert( p1.length == p2.length );		
@@ -136,8 +167,7 @@ final class ArrayUtilsUnchecked {
 		int [] b = inversionVector( p2 );
 
 		int [] inversionVector = new int [ p1.length - 1 ];
-		for( int i=0; i<inversionVector.length; ++i )
-		{
+		for( int i=0; i<inversionVector.length; ++i ) {
 			int val  = ( a[i] - b[i] ) % ( p1.length - i );
 			if( val < 0 )
 				val += p1.length - i;
@@ -151,8 +181,7 @@ final class ArrayUtilsUnchecked {
 	///////////////////////////////
 	
 	public static int []
-	fromInversionVector( int ... inversionVector )
-	{
+	fromInversionVector( int ... inversionVector ) {
 		final int size = inversionVector.length + 1;
 		List< Integer > N = new ArrayList< Integer >();
 		for( int i=0; i<size; ++i )
@@ -171,7 +200,7 @@ final class ArrayUtilsUnchecked {
 		for( Integer v : N )
 			perm.add( v );
 		
-		int [] result = org.mitlware.solution.util.Collections.asArray( perm );
+		int [] result = MitlCollections.asArray( perm );
 		assert( isPermutation( result ) );
 		return result;		
 	}
@@ -179,8 +208,7 @@ final class ArrayUtilsUnchecked {
 	///////////////////////////////
 	
     public static int [] 
-    conjugate( int [] a, int [] b )
-    {
+    conjugate( int [] a, int [] b ) {
 		assert( isPermutation( a ) );
 		assert( isPermutation( b ) );
 		assert( a.length == b.length );		
@@ -200,8 +228,7 @@ final class ArrayUtilsUnchecked {
     ///////////////////////////////
     
     public static int [] 
-    commutator( int [] a, int [] b )
-    {
+    commutator( int [] a, int [] b ) {
 		assert( isPermutation( a ) );
 		assert( isPermutation( b ) );
 		assert( a.length == b.length );		
@@ -224,8 +251,7 @@ final class ArrayUtilsUnchecked {
     ///////////////////////////////
     
     public static int []
-    power( int [] a, int n )
-    {
+    power( int [] a, int n ) {
 		assert( isPermutation( a ) );
 		
         if( n == 0 )
@@ -234,36 +260,30 @@ final class ArrayUtilsUnchecked {
             return a.clone();
         else if( n < 0 )
             return power( invert( a ), -n );
-        else
-        {
+        else {
         	// int [] b = new int [ a.size() ];
         	// Permutation result = new Permutation( a.size() );
         	int [] result = new int [ a.length ];        	
         		
-            if( a.length == 2 )
-            {
+            if( a.length == 2 ) {
             	for( int i=0; i<a.length; ++i )            	
             		result[ i ] = a[ a[ i ] ];
             }
-            else if( n == 3 )
-            {
+            else if( n == 3 ) {
                 // b = [a[a[i]] for i in a];
             	for( int i=0; i<a.length; ++i )            	
             		result[ i ] = a[ a[ a[ i ] ] ];
             }
-            else if( n == 4 )
-            {
+            else if( n == 4 ) {
                 // b = [a[a[a[i]]] for i in a];
             	for( int i=0; i<a.length; ++i )            	
             		result[ i ] = a[ a[ a[ a[ i ] ] ] ];
             }
-            else
-            {
+            else {
                 // b = range(len(a));
                 for( ; ; )
                 {
-                	if( n % 2 != 0 )
-                	{
+                	if( n % 2 != 0 ) {
                 		// b = [b[i] for i in a];
                     	for( int i=0; i<a.length; ++i )            	
                     		result[ i ] = result[ a[ i ] ];
@@ -271,16 +291,14 @@ final class ArrayUtilsUnchecked {
                     	if( --n == 0 )
                     		break;
                 	}
-                	if( n % 4 == 0 )
-                	{
+                	if( n % 4 == 0 ) {
                         // a = [a[a[a[i]]] for i in a];                		
                 		for( int i=0; i<a.length; ++i )            	
                 			result[ i ] = a[ a[ a[ a[ i ] ] ] ];
 
                 		n /= 4;
                 	}
-                	else if( n % 2 == 0 )
-                	{
+                	else if( n % 2 == 0 ) {
                 		// a = [a[i] for i in a];
                     	for( int i=0; i<a.length; ++i )            	
                     		result[ i ] = a[ a[ i ] ];
@@ -333,8 +351,7 @@ final class ArrayUtilsUnchecked {
 		
         int [] result = new int [ perm.length - 1 ];
 
-        for( int i=0; i<perm.length - 1; ++i )
-        {
+        for( int i=0; i<perm.length - 1; ++i ) {
             int val = 0;
             for( int j=i+1; j<perm.length; ++j )
                 if( perm[j] < perm[i] )
@@ -347,8 +364,7 @@ final class ArrayUtilsUnchecked {
 	
 	///////////////////////////////
 	
-	static void transpose( int [] perm, int index1, int index2 ) 
-	{
+	static void transpose( int [] perm, int index1, int index2 ) {
 		assert( isPermutation( perm ) );
 		
 		final int temp = perm[ index1 ];
@@ -360,22 +376,19 @@ final class ArrayUtilsUnchecked {
 	
 	///////////////////////////////
 	
-	static void insert( int [] values, int sourceIndex, int destIndex ) 
-	{
+	static void insert( int [] values, int sourceIndex, int destIndex ) {
 		assert( sourceIndex >= 0 && sourceIndex < values.length );
 		assert( destIndex >= 0 && destIndex < values.length );
 
 		final int sourceValue = values[ sourceIndex ];
 		
-		if( sourceIndex < destIndex )
-		{
+		if( sourceIndex < destIndex ) {
 			System.arraycopy( values, sourceIndex + 1, 
 					values, sourceIndex, 
 					destIndex - sourceIndex );		
 			values[ destIndex ] = sourceValue;
 		}
-		else
-		{
+		else {
 			assert( sourceIndex >= destIndex );
 			
 			System.arraycopy( values, destIndex, 
@@ -393,8 +406,7 @@ final class ArrayUtilsUnchecked {
 	 * @param indicesToShuffle
 	 * @param random
 	 */
-	static void shuffleSubset( int [] permutation, int [] indicesToShuffle, Random random )
-	{
+	static void shuffleSubset( int [] permutation, int [] indicesToShuffle, Random random )	{
 		int [] valuesForShuffleIndices = new int [ indicesToShuffle.length ];
 		for( int i=0; i<indicesToShuffle.length; ++i )
 			valuesForShuffleIndices[ i ] = permutation[ indicesToShuffle[ i ] ]; 
@@ -405,11 +417,9 @@ final class ArrayUtilsUnchecked {
 			permutation[ indicesToShuffle[ i ] ] = valuesForShuffleIndices[ i ];
 	}
 	
-	static void randomShuffleArray( int [] array, Random random ) 
-	{
+	static void randomShuffleArray( int [] array, Random random ) {
 		// http://en.wikipedia.org/wiki/Knuth_shuffle
-		for( int i = array.length; i > 0; )
-		{
+		for( int i = array.length; i > 0; ) {
 			final int j = random.nextInt( i-- );
 			
 			final int temp = array[ i ];
@@ -418,8 +428,7 @@ final class ArrayUtilsUnchecked {
 		}
 	}
 	
-	static void invertArrayRange( int [] array, int from, int to )
-	{
+	static void invertArrayRange( int [] array, int from, int to ) {
 		assert( isPermutation( array ) );
 		assert( from >= 0 && from < array.length );
 		assert( to >= 0 && to <= array.length );		
@@ -457,12 +466,9 @@ final class ArrayUtilsUnchecked {
 		System.arraycopy( newArray, 0, array, 0, len );
 	}
 	
-	// TODO: sort this out
-	static int [] flip( int [] perm, int a, int b )
-	{
+	static int [] flip( int [] perm, int a, int b )	{
 		assert( isPermutation( perm ) );
-		if( a > b )
-		{
+		if( a > b ) {
 			final int temp = a;
 			a = b + 1;
 			b = temp - 1;
@@ -470,8 +476,7 @@ final class ArrayUtilsUnchecked {
 		
 		if( a == b )
 			return perm;			
-		else
-		{
+		else {
 			int [] newPerm = new int[ perm.length ];
 			System.arraycopy( perm, 0, newPerm, 0, a );
 		

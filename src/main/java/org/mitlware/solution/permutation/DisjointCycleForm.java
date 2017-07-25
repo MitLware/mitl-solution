@@ -8,14 +8,12 @@ import java.util.Set;
 
 public final class DisjointCycleForm
 // implements Comparable< PermutationCycle >
-implements Permutation
-{
+implements Permutation {
 	private Set< Cycle > disjointCycles_;
 	
 	///////////////////////////////
 	
-	public DisjointCycleForm( int ... perm )
-	{
+	public DisjointCycleForm( int ... perm ) {
 		if( !ArrayUtilsUnchecked.isPermutation( perm ) )
 			throw new IllegalArgumentException();
 		
@@ -23,14 +21,12 @@ implements Permutation
 		assert( invariant() );
 	}
 
-	public DisjointCycleForm( Cycle cycle )
-	{
+	public DisjointCycleForm( Cycle cycle )	{
 		disjointCycles_ = java.util.Collections.singleton( cycle );
 		assert( invariant() );
 	}
 	
-	public DisjointCycleForm( Set< Cycle > cycles )
-	{
+	public DisjointCycleForm( Set< Cycle > cycles )	{
 		if( !CycleUtilsUnchecked.cyclesAreDisjoint( cycles ) )
 			throw new IllegalArgumentException();
 		
@@ -38,8 +34,7 @@ implements Permutation
 		assert( invariant() );
 	}
 	
-	public DisjointCycleForm( DisjointCycleForm rhs )
-	{
+	public DisjointCycleForm( DisjointCycleForm rhs ) {
 		disjointCycles_ = new HashSet< Cycle >( rhs.disjointCycles_ );
 		assert( invariant() );
 	}
@@ -47,8 +42,7 @@ implements Permutation
 	///////////////////////////////
 
 	@Override
-	public int minPreimage() 
-	{
+	public int minPreimage() {
 		if( disjointCycles_.isEmpty() )
 			return -1;
 		else
@@ -65,15 +59,12 @@ implements Permutation
 	}
 
 	@Override
-	public int maxPreimage() 
-	{
+	public int maxPreimage() {
 		if( disjointCycles_.isEmpty() )
 			return 0;
-		else
-		{
+		else {
 			Integer best = null; 
-			for( Cycle c : disjointCycles_ )
-			{
+			for( Cycle c : disjointCycles_ ) {
 				int m = c.maxPreimage();
 				if( best == null || m > best )
 					best = m;
@@ -83,8 +74,7 @@ implements Permutation
 	}
 	
 	@Override
-	public Set< Integer > preimage()
-	{
+	public Set< Integer > preimage() {
 		Set< Integer > result = new HashSet< Integer >();
 		for( Cycle c : disjointCycles_ )
 			result.addAll( c.preimage()  );
@@ -96,8 +86,7 @@ implements Permutation
 		if( point < 0 )
 			throw new IllegalArgumentException();
 		
-		for( Cycle c : disjointCycles_ )
-		{
+		for( Cycle c : disjointCycles_ ) {
 			final int image = c.image( point );
 			if( image != point )
 				return image;
@@ -106,20 +95,18 @@ implements Permutation
 		return point;
 	}
 
-	public int order()
-	{
+	public int order() {
 		int [] orders = new int [ disjointCycles_.size() ];
 		int i = 0;
 		for( Cycle c : disjointCycles_ )
 			orders[ i++ ] = c.length();
 		
-		return org.mitlware.solution.util.Math.lcm( orders );		
+		return org.mitlware.support.math.Math.lcm( orders );		
 	}
 	
 	///////////////////////////////
 	
-	public int [] toPermutationArray()
-	{
+	public int [] toPermutationArray() {
 		final int size = maxPreimage() + 1;
 		int [] perm = new int [ size ];
 		
@@ -133,20 +120,17 @@ implements Permutation
 	///////////////////////////////
 
 	@Override
-	public DisjointCycleForm clone()
-	{
+	public DisjointCycleForm clone() {
 		return new DisjointCycleForm( this );
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return disjointCycles_.hashCode();
 	}
 	
 	@Override	
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		if( !( o instanceof DisjointCycleForm ) )
 			return false;
 			
@@ -155,15 +139,13 @@ implements Permutation
 	}
 	
 //	@Override
-//	public int compareTo( PermutationCycle o ) 
-//	{
+//	public int compareTo( PermutationCycle o ) {
 //		return disjointCycles_.compareTo( o.disjointCycles_ );
 //	}
 
 	
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuffer result = new StringBuffer();
 		for( Cycle c : disjointCycles_ )
 			result.append( c );			
@@ -173,8 +155,7 @@ implements Permutation
 
 	///////////////////////////////
 	
-	public boolean invariant()
-	{
+	public boolean invariant() {
 		return CycleUtilsUnchecked.cyclesAreDisjoint( 
 				disjointCycles_ );
 	}

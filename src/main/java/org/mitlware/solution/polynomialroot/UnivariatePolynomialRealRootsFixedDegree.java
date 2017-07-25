@@ -42,8 +42,7 @@ implements Function< Double, Double >
 		result.append( "degree: " + degree + " poly:" );
 			
 		result.append( impl[ 1 ] + '*' );			
-		for( int i=0; i<degree; ++i )
-		{
+		for( int i=0; i<degree; ++i ) {
 			result.append( "(x - " );
 			final double value = Math.abs( impl[ i + 1 ] );
 			result.append( value + ")" );

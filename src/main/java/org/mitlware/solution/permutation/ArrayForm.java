@@ -1,22 +1,3 @@
-/*
- * Copyright (C) Jerry Swan, 2010-2012.
- * 
- * This file is part of Hyperion, a hyper-heuristic solution-domain framework.
- * 
- * Hyperion is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * Hyperion is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with Hyperion. If not, see <http://www.gnu.org/licenses/>.
- *
- */
 
 //////////////////////////////////////////////////////////////////////
 
@@ -28,7 +9,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import org.mitlware.support.util.Sampling;
+import org.mitlware.support.util.*;
 import org.mitlware.support.math.UnitInterval;
 
 //////////////////////////////////////////////////////////////////////
@@ -42,7 +23,7 @@ implements Permutation, Comparable< ArrayForm > {
 	
 	public ArrayForm( int n ) {
 		if( n < 0 )
-			throw new IllegalArgumentException( "Invalid statelet.permutation size" );
+			throw new IllegalArgumentException( "Invalid permutation size" );
 		
 		perm_ = new int [ n ];
 		
@@ -87,15 +68,12 @@ implements Permutation, Comparable< ArrayForm > {
 	}
 	
 	@Override
-	public Set< Integer > preimage()
-	{
-		return new HashSet< Integer >( 
-				org.mitlware.solution.util.Collections.asList( perm_ ) );
+	public Set< Integer > preimage() {
+		return new HashSet< Integer >( MitlCollections.asList( perm_ ) );
 	}
 
 	@Override
-	public int image( int point ) 
-	{
+	public int image( int point ) {
 		if( point < 0 )
 			throw new IllegalArgumentException();
 		if( point >= perm_.length )
@@ -106,12 +84,11 @@ implements Permutation, Comparable< ArrayForm > {
 	
 	///////////////////////////////
 	
-	public int [] toArray() {
-		return perm_.clone();
-	}
+	public int [] toArray() { return perm_;	}
+	public int [] copyToArray() { return perm_.clone();	}
+
 	
-	public void transpose( int index1, int index2 ) 
-	{
+	public void transpose( int index1, int index2 ) {
 		if( index1 < 0 || index1 >= size() )
 			throw new IllegalArgumentException();
 		if( index2 < 0 || index2 >= size() )
@@ -150,8 +127,7 @@ implements Permutation, Comparable< ArrayForm > {
 	 * New York: Van Nostrand Reinhold. 
 	 */
 
-	public void randomShuffle( Random random ) 
-	{
+	public void randomShuffle( Random random ) {
 		ArrayUtilsUnchecked.randomShuffleArray( perm_, random );
 		assert( invariant() );
 	}
@@ -160,8 +136,7 @@ implements Permutation, Comparable< ArrayForm > {
 	 * Move the element at sourceIndex to destIndex,
 	 * shifting elements as required.
 	 */
-	public void insert( int sourceIndex, int destIndex ) 
-	{
+	public void insert( int sourceIndex, int destIndex ) {
 		if( sourceIndex < 0 || sourceIndex >= perm_.length )
 			throw new IllegalArgumentException();
 		if( destIndex < 0 || destIndex >= perm_.length )
@@ -177,8 +152,7 @@ implements Permutation, Comparable< ArrayForm > {
 	 * shifting elements as required.
 	 */
 	
-	public void randomInsert( Random random ) 
-	{
+	public void randomInsert( Random random ) {
 		int r1 = random.nextInt( perm_.length );
 
 		int r2;
@@ -190,8 +164,7 @@ implements Permutation, Comparable< ArrayForm > {
 	}
 
 	
-	public void rotate( int amount ) 
-	{
+	public void rotate( int amount ) {
 		ArrayUtilsUnchecked.rotateArray( perm_, amount );
 		assert invariant();
 	}
@@ -202,8 +175,7 @@ implements Permutation, Comparable< ArrayForm > {
 	 * @param mutationDegree
 	 * @param random
 	 */
-	public void randomShuffleSubset( UnitInterval mutationDegree, Random random )
-	{
+	public void randomShuffleSubset( UnitInterval mutationDegree, Random random ) {
 		final int numShuffles = 2 + (int) ( mutationDegree.getValue() * ( size() - 2 ) );
 
 		int [] indicesToShuffle = Sampling.randomSubsetArray( perm_.length, numShuffles, random );
@@ -241,52 +213,6 @@ implements Permutation, Comparable< ArrayForm > {
 	
 	///////////////////////////////
 	
-	/**
-	 * N-Opt move, selects N arches and substitutes them with new randomly selected ones.
-	 * The value of N depends on the intensityOfMutation parameter:
-	 * N = 2 if        intensityOfMutation <= 0.25
-	 * N = 3 if 0.25 < intensityOfMutation <= 0.50
-	 * N = 4 if 0.50 < intensityOfMutation <= 0.75
-	 * N = 5 if 0.75 < intensityOfMutation <= 1.00
-	 * 
-	 */
-	
-	public void nOpt( UnitInterval mutationDegree, Random random )
-	{
-		int n = 2;
-		if( mutationDegree.getValue() >= 0.25 )
-			n = 3;
-		else if( mutationDegree.getValue() >= 0.5 )
-			n = 4;
-		else if( mutationDegree.getValue() >= 0.75 )
-			n = 5;
-
-		nOpt( n, random );
-	}
-	
-	public void nOpt( int n, Random random )
-	{
-		if( n < 1 )
-			throw new IllegalArgumentException();
-
-		int [] newValues = perm_.clone();
-		for( int i=0; i<n-1; ++i )
-		{
-			final int r1 = random.nextInt( perm_.length );
-			int r2;
-			while( ( r2 = random.nextInt( perm_.length ) ) == r1 )
-				;
-			
-			newValues = ArrayUtilsUnchecked.flip( newValues, r1, r2 );
-		}
-
-		perm_ = newValues;
-		assert invariant();
-	}
-	
-	
-	///////////////////////////////
-
 	public int size() { return perm_.length; }
 	
 	public int get( int i ) { return perm_[ i ]; }
@@ -322,8 +248,7 @@ implements Permutation, Comparable< ArrayForm > {
 	
 	///////////////////////////////
 
-	public void add( ArrayForm other )
-	{
+	public void add( ArrayForm other ) {
 		if( size() != other.size() )
 			throw new IllegalArgumentException();
 		
@@ -331,8 +256,7 @@ implements Permutation, Comparable< ArrayForm > {
 		assert invariant();
 	}
 
-	public void subtract( ArrayForm other )
-	{
+	public void subtract( ArrayForm other )	{
 		if( size() != other.size() )
 			throw new IllegalArgumentException();
 		
@@ -340,8 +264,7 @@ implements Permutation, Comparable< ArrayForm > {
 		assert invariant();
 	}
 	
-	public void multiply( ArrayForm other )
-	{
+	public void multiply( ArrayForm other )	{
 		if( size() != other.size() )
 			throw new IllegalArgumentException();
 		
@@ -349,8 +272,7 @@ implements Permutation, Comparable< ArrayForm > {
 		assert invariant();
 	}
 
-	public void divide( ArrayForm other )
-	{
+	public void divide( ArrayForm other ) {
 		if( size() != other.size() )
 			throw new IllegalArgumentException();
 		
@@ -358,8 +280,7 @@ implements Permutation, Comparable< ArrayForm > {
 		assert invariant();
 	}
 
-	public void mod( ArrayForm other )
-	{
+	public void mod( ArrayForm other ) {
 		if( size() != other.size() )
 			throw new IllegalArgumentException();
 		
@@ -367,8 +288,7 @@ implements Permutation, Comparable< ArrayForm > {
 		assert invariant();
 	}
 
-	public void conjugate( ArrayForm other )
-	{
+	public void conjugate( ArrayForm other ) {
 		if( size() != other.size() )
 			throw new IllegalArgumentException();
 		
@@ -376,8 +296,7 @@ implements Permutation, Comparable< ArrayForm > {
 		assert invariant();
 	}
 
-	public void commutatorWith( ArrayForm other )
-	{
+	public void commutatorWith( ArrayForm other ) {
 		if( size() != other.size() )
 			throw new IllegalArgumentException();
 		
@@ -385,16 +304,14 @@ implements Permutation, Comparable< ArrayForm > {
 		assert invariant();
 	}
 
-	public void power( int n )
-	{
+	public void power( int n ) {
 		perm_ = ArrayUtilsUnchecked.power( perm_, n );
 		assert invariant();
 	}
 
 	//////////////////////////////
 	
-	public void invert( int from, int to )
-	{
+	public void invert( int from, int to ) {
 		if( from < 0 || from >= perm_.length )
 			throw new IllegalArgumentException();
 		if( to < 0 || to >= perm_.length )
@@ -406,8 +323,7 @@ implements Permutation, Comparable< ArrayForm > {
 		assert invariant();
 	}
 
-	public void invert()
-	{
+	public void invert() {
 		perm_ = ArrayUtilsUnchecked.invert( perm_ );
 		assert invariant();
 	}

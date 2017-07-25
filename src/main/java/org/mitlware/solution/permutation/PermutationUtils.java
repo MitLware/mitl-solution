@@ -11,8 +11,7 @@ import java.util.Set;
 public class PermutationUtils {
 
 	public static Set< Cycle > 
-	multiply( Permutation c1, Permutation c2 ) 
-	{
+	multiply( Permutation c1, Permutation c2 ) {
 		Set< Integer > c1Preimage = c1.preimage();
 		Set< Integer > c2Preimage = c2.preimage();
 		final int maxPreimage = Math.max( c1.maxPreimage(), c2.maxPreimage() ); 
@@ -24,26 +23,22 @@ public class PermutationUtils {
 
 		Set< Cycle > result = new HashSet< Cycle >();
 
-		for( int smallest=available.nextSetBit(0); smallest>=0; smallest=available.nextSetBit( smallest+1 ) )
-		{
+		for( int smallest=available.nextSetBit(0); smallest>=0; smallest=available.nextSetBit( smallest+1 ) ) {
 			int i = smallest;
 			List< Integer > currentCycle = new ArrayList< Integer >();
 			currentCycle.add( i );
 			available.clear( i );
 				
-			for( ; ; )
-			{
+			for( ; ; ) {
 				i = c2.image( c1.image( i ) );
 
 				if( Arrays.asList( currentCycle ).contains( i ) 
-					|| !available.get( i ) )
-				{
+					|| !available.get( i ) ) {
 					available.clear( i );					
 					result.add( new Cycle( currentCycle ) );
 					break;
 				}
-				else
-				{
+				else {
 					available.clear( i );					
 					currentCycle.add( i );
 				}

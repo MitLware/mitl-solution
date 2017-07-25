@@ -5,37 +5,35 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.mitlware.solution.util.Collections;
+import org.mitlware.support.util.*;
 
-import org.mitlware.support.lang.Diag;
+import org.mitlware.Diag;
 
 //////////////////////////////////////////////////////////////////////
 
 public final class Cycle
-implements Permutation, Comparable< Cycle >
-{
+implements Permutation, Comparable< Cycle > {
+
 	private int [] cycle_;
 	
 	///////////////////////////////
 	
-	public Cycle( int ... cycle )
-	{
+	public Cycle( int ... cycle ) {
 		if( !isCycle( cycle ) )
 			throw new IllegalArgumentException();
 		
 		cycle_ = cycle.clone();
-		final int minIndex = org.mitlware.solution.util.Arrays.minIndex( cycle_ );
+		final int minIndex = MitlArrays.minIndex( cycle_ );
 		ArrayUtilsUnchecked.rotateArray( cycle_, -minIndex );
 		
 		assert( invariant() );
 	}
 
 	public Cycle( List< Integer > cycle ) {
-		this( org.mitlware.solution.util.Collections.asArray( cycle ) );
+		this( MitlCollections.asArray( cycle ) );
 	}
 	
-	public Cycle( Cycle rhs )
-	{
+	public Cycle( Cycle rhs ) {
 		cycle_ = rhs.cycle_.clone();
 		assert( invariant() );
 	}
@@ -54,13 +52,12 @@ implements Permutation, Comparable< Cycle >
 	
 	@Override
 	public Set< Integer > preimage() {
-		return new HashSet< Integer >( 
-				org.mitlware.solution.util.Collections.asList( cycle_ ) );
+		return new HashSet< Integer >( MitlCollections.asList( cycle_ ) );
 	}
 
 	@Override
 	public int image( int point ) {
-		final int index = Collections.asList( cycle_ ).indexOf( point );
+		final int index = MitlCollections.asList( cycle_ ).indexOf( point );
 		if( index == -1 )
 			return point;
 		else
@@ -70,20 +67,17 @@ implements Permutation, Comparable< Cycle >
 	///////////////////////////////
 	
 	@Override
-	public Cycle clone()
-	{
+	public Cycle clone() {
 		return new Cycle( this );
 	}
 	
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		return Arrays.hashCode( cycle_ );
 	}
 	
 	@Override	
-	public boolean equals( Object o )
-	{
+	public boolean equals( Object o ) {
 		if( !( o instanceof Cycle ) )
 			return false;
 			
@@ -97,11 +91,9 @@ implements Permutation, Comparable< Cycle >
 	}
 
 	@Override
-	public String toString()
-	{
+	public String toString() {
 		StringBuffer result = new StringBuffer( "(" );
-		for( int i=0; i<cycle_.length; ++i )
-		{
+		for( int i=0; i<cycle_.length; ++i ) {
 			result.append( cycle_[ i ] );			
 			if( i < cycle_.length - 1 )
 				result.append( ',' );
@@ -115,12 +107,12 @@ implements Permutation, Comparable< Cycle >
 	int order() { return cycle_.length; }
 	int length() { return cycle_.length; }
 	
-	int [] toArray() { return cycle_.clone(); }
+	int [] toArray() { return cycle_; }
+	int [] copyToArray() { return cycle_.clone(); }
 	
 	///////////////////////////////
 	
-	public int [] toPermutationArray()
-	{
+	public int [] toPermutationArray() {
 		final int size = maxPreimage() + 1;
 		int [] perm = new int [ size ];
 		
@@ -133,19 +125,15 @@ implements Permutation, Comparable< Cycle >
 	
 	///////////////////////////////
 
-	public boolean invariant()
-	{
-		return isCycle( cycle_ ) &&
-				org.mitlware.solution.util.Arrays.minIndex( cycle_ ) == 0;				
+	public boolean invariant() {
+		return isCycle( cycle_ ) && MitlArrays.minIndex( cycle_ ) == 0;				
 	}
 	
 	///////////////////////////////
 	
-	public static boolean isCycle( int ... array )
-	{
+	public static boolean isCycle( int ... array ) {
 		Set< Integer > values = new HashSet< Integer >();
-		for( int i : array )
-		{
+		for( int i : array ) {
 			values.add( i );
 			if( i < 0 )
 				return false;
