@@ -84,9 +84,7 @@ implements Permutation, Comparable< ArrayForm > {
 	
 	///////////////////////////////
 	
-	public int [] toArray() { return perm_;	}
-	public int [] copyToArray() { return perm_.clone();	}
-
+	public int [] toArray() { return perm_.clone();	}
 	
 	public void transpose( int index1, int index2 ) {
 		if( index1 < 0 || index1 >= size() )
@@ -189,16 +187,6 @@ implements Permutation, Comparable< ArrayForm > {
 	///////////////////////////////
 	
 	public BitSet getAscents() {
-		/***
-		if( perm_.length == 0 )
-			return new BitSet();
-
-		BitSet result = new BitSet( perm_.length );		
-		for( int i=0; i<perm_.length - 1; ++i )
-			if( perm_[i] < perm_[i+1] )
-				result.set( i );
-		return result;
-		***/
 		return ArrayUtilsUnchecked.getAscents( perm_ );
 	}
 	
