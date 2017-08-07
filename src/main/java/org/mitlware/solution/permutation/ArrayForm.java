@@ -298,18 +298,6 @@ implements Permutation, Comparable< ArrayForm > {
 	}
 
 	//////////////////////////////
-	
-	public void invert( int from, int to ) {
-		if( from < 0 || from >= perm_.length )
-			throw new IllegalArgumentException();
-		if( to < 0 || to >= perm_.length )
-			throw new IllegalArgumentException();			
-		if( from > to )
-			throw new IllegalArgumentException();			
-		
-		ArrayUtilsUnchecked.invertArrayRange( perm_, from, to );
-		assert invariant();
-	}
 
 	public void invert() {
 		perm_ = ArrayUtilsUnchecked.invert( perm_ );

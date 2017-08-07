@@ -428,19 +428,6 @@ final class ArrayUtilsUnchecked {
 		}
 	}
 	
-	static void invertArrayRange( int [] array, int from, int to ) {
-		assert( isPermutation( array ) );
-		assert( from >= 0 && from < array.length );
-		assert( to >= 0 && to <= array.length );		
-		assert( from <= to );
-		
-		int [] inverse = new int[ array.length ];
-		for( int i=from; i<to; ++i )
-			inverse[ array[ i ] ] = i;
-		for( int i=from; i<to; ++i )
-			array[ i ] = inverse[ i ];
-	}
-	
 	static void rotateArray( int[] array, int ammount ) {
 
 		// size of the array

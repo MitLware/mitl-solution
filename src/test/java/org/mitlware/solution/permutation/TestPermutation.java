@@ -71,14 +71,9 @@ public final class TestPermutation {
 		};
 
 		Function< ArrayForm, ArrayForm > invert = ( ArrayForm x ) -> {
-		
-			final int from = random.nextInt( x.size() - 1 );
-			int to;
-			while( ( to = random.nextInt( x.size() ) ) <= from )
-				;
 
 			ArrayForm result = new ArrayForm( x );
-			result.invert( from, to );
+			result.invert();
 			return result;			
 		};		
 		
