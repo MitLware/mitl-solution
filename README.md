@@ -1,4 +1,4 @@
-# MitL-solutions 
+# MitL-solution
 
 Representations for ubiquitous candidate solution types. Includes permutations, bit vectors and polynomials (as represented via their real roots).
 
@@ -33,8 +33,8 @@ Depending on your operating system, a **Use auto-import** opion might apper. If 
 Once you download [Scala IDE for eclipse](http://scala-ide.org/download/sdk.html) and have sbt installed, you should be able to run ```sbt eclipse``` in the command line, in the project's root directory (.../mitlproblems). The output of the command should look similar to this:
 
 ```
-[info] Loading project definition from /Users/username/MitL/mitl-solutions/project
-[info] Set current project to MitLware-problems (in build file:/Users/username/MitL/mitl-solutions/)
+[info] Loading project definition from /Users/username/MitL/mitl-solution/project
+[info] Set current project to MitLware-problems (in build file:/Users/username/MitL/mitl-solution/)
 [info] About to create Eclipse project files for your project(s).
 [info] Successfully created Eclipse project files for project(s):
 [info] MitLware-problems
@@ -46,7 +46,7 @@ If you are unable to run ```sbt eclipse```, see <https://github.com/typesafehub/
 
 ## Running the tests
 
-Tests can be found in the [/problem](mitl-solutions/src/test/java/org/mitlware/problem) directory.
+Tests can be found in the [/problem](mitl-solution/src/test/java/org/mitlware/problem) directory.
 
 ### sbt
 You can run all the tests at once by running ```sbt``` in the terminal, and then typing ```test```, or a particular test with ```sbt``` > ```testOnly *NameOfTestClass```.
