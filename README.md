@@ -68,12 +68,9 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* Steven Adriaensen
+* Jerry Swan
 * Alexander E. I. Brownlee
-* Pablo García Sánchez 
-* Ahmed Kheiri
 * Faustyna Krawiec
-* Markus Wagner
 * David R. White
 
 See <http://www.mitlware.org/> for more infromation on the project.
